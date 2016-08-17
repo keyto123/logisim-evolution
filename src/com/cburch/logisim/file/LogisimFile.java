@@ -65,6 +65,7 @@ import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.EventSourceWeakSupport;
 import com.cburch.logisim.util.ListUtil;
+import com.cburch.logisim.util.UniquelyNamedThread;
 import com.cburch.logisim.util.StringUtil;
 
 public class LogisimFile extends Library implements LibraryEventSource,CircuitListener {
@@ -115,11 +116,12 @@ public class LogisimFile extends Library implements LibraryEventSource,CircuitLi
 
 	
 
-	private static class WritingThread extends Thread {
+	private static class WritingThread extends UniquelyNamedThread {
 		OutputStream out;
 		LogisimFile file;
 
 		WritingThread(OutputStream out, LogisimFile file) {
+			super("WritingThread");
 			this.out = out;
 			this.file = file;
 		}
