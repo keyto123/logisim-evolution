@@ -251,9 +251,9 @@ public class Control extends InstanceFactory {
                 case 0b100111: //NOR
                     return getValue(0b1110, 4);
                 case 0b001011: // MOVN
-                    return getValue(0b1001, 4);
-                case 0b001010: // MOVZ
                     return getValue(0b1011, 4);
+                case 0b001010: // MOVZ
+                    return getValue(0b1001, 4);
                 default:
                     break;
             }
@@ -494,7 +494,7 @@ public class Control extends InstanceFactory {
         int opcode = instruction >> 26;
         int lastSixBits = instruction & 0b111111;
         // SLTI and SLTIU
-        if(opcode == 001010 || opcode == 001011) {
+        if(opcode == 0b001010 || opcode == 0b001011) {
             return getValue(0b10, 2);
         }
         // SLT and SLTU
