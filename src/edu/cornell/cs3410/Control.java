@@ -17,10 +17,12 @@ import java.util.Arrays;
 
 public class Control extends InstanceFactory {
 	
-	static final int NUM_OUTPUTS = 23;
+	static final int NUM_OUTPUTS = 26;
 	static final int CONTROL_WIDTH = 200;
 	static final int SPACING = 30;
 	static final int CONTROL_HEIGHT = (NUM_OUTPUTS + 1) * SPACING;
+    // Need to align the input pin on a multiple of 10
+    static final int INPUT_HEIGHT = CONTROL_HEIGHT % 20 == 0 ? CONTROL_HEIGHT/2 : CONTROL_HEIGHT / 2 + 5;
 	private List<Port> out_ports;
 	private List<String> out_port_names;
     private Port in_port;
@@ -38,6 +40,9 @@ public class Control extends InstanceFactory {
             "IsJump",
             "IsBranch",
             "IsMem",
+            "Immediate",
+            "Offset",
+            "JumpTarget",
             "ALUOpCode",
             "ImmediateSelect",
             "ImmSignExt",
@@ -63,6 +68,9 @@ public class Control extends InstanceFactory {
             get_out_port(1),
             get_out_port(1),
             get_out_port(1),
+            get_out_port(16), //Immediate
+            get_out_port(16), //Offset
+            get_out_port(26), //JumpTarget
             get_out_port(4), //ALUOpCode
             get_out_port(1),
             get_out_port(1),
@@ -82,7 +90,7 @@ public class Control extends InstanceFactory {
             get_out_port(2)  //ExecOut
         );
 
-        in_port = new Port(0, CONTROL_HEIGHT/2, Port.INPUT, 32);
+        in_port = new Port(0, INPUT_HEIGHT, Port.INPUT, 32);
         
         Port[] all_ports = new Port[NUM_OUTPUTS + 1];
         out_ports.toArray(all_ports);
@@ -176,6 +184,33 @@ public class Control extends InstanceFactory {
             return getValue(1,1);
         }
         return getValue(0,1);
+    }
+
+    private Value getImmediate(int instruction) {
+        if (getIsImmediate(instruction).toIntValue() == 1) {
+            // First 16 bits are the immediate for an I type instruction
+            return getValue(instruction & 0b1111111111111111, 16);
+        } else {
+            return getValue(0,16);
+        }
+    }
+
+    private Value getOffset(int instruction) {
+        if (getIsBranch(instruction).toIntValue() == 1 || getIsMem(instruction).toIntValue() == 1) {
+            return getValue(instruction & 0b1111111111111111, 16);
+        } else {
+            return getValue(0,16);
+        }
+    }
+
+    private Value getJumpTarget(int instruction) {
+        int opcode = instruction >> 26;
+        // J and JAL
+        if (opcode == 0b000010 || opcode == 0b000011) {
+            return getValue(instruction & 0b11111111111111111111111111, 26);
+        } else {
+            return getValue(0, 26);
+        }
     }
 
     private Value getALUOpCode(int instruction) {
@@ -522,6 +557,15 @@ public class Control extends InstanceFactory {
                     break;
                 case "IsMem":
                     out = getIsMem(instruction);
+                    break;
+                case "Immediate":
+                    out = getImmediate(instruction);
+                    break;
+                case "Offset":
+                    out = getOffset(instruction);
+                    break;
+                case "JumpTarget":
+                    out = getJumpTarget(instruction);
                     break;
                 case "ALUOpCode":
                     out = getALUOpCode(instruction);

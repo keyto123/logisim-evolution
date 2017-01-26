@@ -1,8 +1,8 @@
 class TestUnit:
 
-    outputs = ['IsImmediate', 'IsRegister', 'IsTableB', 'IsJump', 'IsBranch', 'IsMem', 'ALUOpCode', 'ImmediateSelect', 'ImmSignExt', 'CompSign', 'Ra', 'Rb', 'Rd',
+    outputs = ['IsImmediate', 'IsRegister', 'IsTableB', 'IsJump', 'IsBranch', 'IsMem', 'Immediate', 'Offset', 'JumpTarget', 'ALUOpCode', 'ImmediateSelect', 'ImmSignExt', 'CompSign', 'Ra', 'Rb', 'Rd',
                 'PCSelect', 'BranchSelect', 'MemLoad', 'MemStore', 'MemWord', 'MemSignExt', 'FuncField', 'SaControl', 'ASelect', 'ExecOut']
-    output_lens = ['1', '1', '1', '1', '1', '1', '4', '1', '1', '1', '5', '5', '5', '2', '3', '1', '1', '1', '1', '1', '2', '2', '2']
+    output_lens = ['1', '1', '1', '1', '1', '1', '16', '16', '26', '4', '1', '1', '1', '5', '5', '5', '2', '3', '1', '1', '1', '1', '1', '2', '2', '2']
 
     def __init__(self, inst, non_zero_outs):
         self.inst = inst
@@ -23,6 +23,7 @@ tests = [
     # ADDIU
     TestUnit("00100101010010010000010100110010", {
             "IsImmediate" : "1",
+            "Immediate" : "0000010100110010",
             "ALUOpCode" : "0010",
             "ImmediateSelect" : "1",
             "ImmSignExt" : "1",
@@ -32,6 +33,7 @@ tests = [
     # ANDI
     TestUnit("00110010010011000000000100100011", {
         "IsImmediate" : "1",
+        "Immediate" : "0000000100100011",
         "ALUOpCode" : "1000",
         "ImmediateSelect" : "1",
         "Ra" : "10010",
