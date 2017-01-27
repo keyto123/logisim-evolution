@@ -125,7 +125,7 @@ public class Control extends InstanceFactory {
 
     private Value getIsImmediate(int instruction) {
         // Get first 6 bits of instruction
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode >= 0b001001 && opcode <= 0b001111) {
             return getValue(1, 1);
         } else {
@@ -135,7 +135,7 @@ public class Control extends InstanceFactory {
 
     private Value getIsRegister(int instruction) {
         // Get first 6 bits of instruction
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         if (opcode == 0b0 && lastSixBits != 0b001000 && lastSixBits != 0b001001) {
             return getValue(1, 1);
@@ -145,7 +145,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getIsTableB(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (getIsJump(instruction).toIntValue() == 1) {
             return getValue(1,1);
         }
@@ -159,7 +159,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getIsJump(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode == 0b000010 || opcode == 0b000011) {
             return getValue(1,1);
         }
@@ -171,7 +171,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getIsBranch(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode >= 0b000100 && opcode <= 0b000111) {
             return getValue(1,1);
         }
@@ -182,7 +182,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getIsMem(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode >= 0b100000 && opcode <= 0b101011) {
             return getValue(1,1);
         }
@@ -207,7 +207,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getJumpTarget(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         // J and JAL
         if (opcode == 0b000010 || opcode == 0b000011) {
             return getValue(instruction & 0b11111111111111111111111111, 26);
@@ -219,14 +219,14 @@ public class Control extends InstanceFactory {
     private Value getShiftAmount(int instruction) {
         if (getIsRegister(instruction).toIntValue() == 1) {
             //Shamt is bits 6-10 for Shift instruction, but guaranteed to be 0 for non-shift R type instructions
-            return getValue(instruction >> 6 & 0b11111, 5);
+            return getValue(instruction >>> 6 & 0b11111, 5);
         } else {
             return getValue(0,5);
         }
     }
 
     private Value getALUOpCode(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         switch (opcode) {
             case 0b001001: // ADDIU
                 return getValue(0b0010, 4);
@@ -290,7 +290,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getImmSignExt(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if((opcode >= 0b001001 && opcode <= 0b001011) || 
            getIsMem(instruction).toIntValue() == 1 || 
            getIsBranch(instruction).toIntValue() == 1 ) {
@@ -302,7 +302,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getCompSign(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         if (opcode == 0b001010 || (opcode == 0b0000000 && lastSixBits == 0b101010) || getIsBranch(instruction).toIntValue() == 1) {
             return getValue(1,1);
@@ -313,7 +313,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getRa(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         if(opcode == 0b000010 || opcode == 0b000011 || opcode == 0b001111) {
             return getValue(0,5);
@@ -323,30 +323,30 @@ public class Control extends InstanceFactory {
         }
         else {
             // Get bits 21-25
-            int ra = (instruction >> 21) & 0b11111;
+            int ra = (instruction >>> 21) & 0b11111;
             return getValue(ra, 5);
         }
     }
 
     private Value getRb(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if(opcode == 0b001111 || getIsJump(instruction).toIntValue() == 1 || getIsImmediate(instruction).toIntValue() == 1 ||
             opcode == 0b000001) {
             return getValue(0,5);
         }
         else {
             // Get bits 16-20
-            int ra = (instruction >> 16) & 0b11111;
+            int ra = (instruction >>> 16) & 0b11111;
             return getValue(ra, 5);
         }
     }
 
     private Value getRd(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         if(getIsImmediate(instruction).toIntValue() == 1 || getIsMem(instruction).toIntValue() == 1) {
             // Get bits 16-20
-            int rd = (instruction >> 16) & 0b11111;
+            int rd = (instruction >>> 16) & 0b11111;
             return getValue(rd, 5);
         }
         else if (getIsBranch(instruction).toIntValue() == 1 || (opcode == 0 && lastSixBits == 0b001000) || opcode == 0b000010) {
@@ -357,13 +357,13 @@ public class Control extends InstanceFactory {
         }
         else {
             // Get bits 11-15
-            int rd = (instruction >> 11) & 0b11111;
+            int rd = (instruction >>> 11) & 0b11111;
             return getValue(rd, 5);
         }
     }
 
     private Value getPCSelect(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         // JR and JALR
         if(opcode == 0 && (lastSixBits == 0b001000 || lastSixBits == 0b001001)) {
@@ -382,7 +382,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getBranchSelect(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         switch (opcode) {
             case 0b000100: // BEQ
                 return getValue(0b101, 3);
@@ -393,7 +393,7 @@ public class Control extends InstanceFactory {
             case 0b000111: // BGTZ
                 return getValue(0b001, 3);
             case 0b000001: // BLTZ and BGEZ
-                int op = (instruction >> 16) & 0b11111;
+                int op = (instruction >>> 16) & 0b11111;
                 if (op == 0) {
                     return getValue(0b010, 3);
                 } else if (op == 1) {
@@ -405,7 +405,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getMemLoad(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode == 0b100000 || opcode == 0b100011 || opcode == 0b100100) {
             return getValue(1,1);
         }
@@ -415,7 +415,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getMemStore(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode == 0b101000 || opcode == 0b101011) {
             return getValue(1,1);
         }
@@ -425,7 +425,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getMemWord(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if (opcode == 0b101011 || opcode == 0b100011) {
             return getValue(1,1);
         }
@@ -435,7 +435,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getMemSignExt(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if(opcode == 0b100000) {
             return getValue(1,1);
         }
@@ -445,7 +445,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getFuncField(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if(opcode == 0b0) {
             // switch (instruction & 0b111111) {
             //     case 0b000000: // SLL
@@ -475,7 +475,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getSaControl(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         if(opcode == 0b001111) {
             return getValue(0b01, 2);
         }
@@ -497,7 +497,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getASelect(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         // MOVN and MOVZ
         if(opcode == 0b0 && (lastSixBits == 0b001011 || lastSixBits == 0b001010)) {
@@ -512,7 +512,7 @@ public class Control extends InstanceFactory {
     }
 
     private Value getExecOut(int instruction) {
-        int opcode = instruction >> 26;
+        int opcode = instruction >>> 26;
         int lastSixBits = instruction & 0b111111;
         // SLTI and SLTIU
         if(opcode == 0b001010 || opcode == 0b001011) {

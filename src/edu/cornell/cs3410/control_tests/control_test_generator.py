@@ -377,6 +377,23 @@ tests = [
         "PCSelect" : "11",
         "ASelect" : "10",
     }),
+
+
+    # LB, LBU, SW, SB
+    # LW
+    TestUnit("10001110011010110000000100100011", {
+        "IsTableB" : "1",
+        "IsMem" : "1",
+        "Offset" : "0000000100100011",
+        "ALUOpCode" : "0011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "Ra" : "10011",
+        "Rb" : "01011",
+        "Rd" : "01011",
+        "MemLoad" : "1",
+        "MemWord" : "1",
+    }),
 ]
 
 _ = ['IsImmediate', 'IsRegister', 'IsTableB', 'IsJump', 'IsBranch', 'IsMem', 'Immediate', 
