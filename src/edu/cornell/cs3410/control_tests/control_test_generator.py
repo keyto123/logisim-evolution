@@ -379,7 +379,6 @@ tests = [
     }),
 
 
-    # LB, LBU, SW, SB
     # LW
     TestUnit("10001110011010110000000100100011", {
         "IsTableB" : "1",
@@ -393,6 +392,60 @@ tests = [
         "Rd" : "01011",
         "MemLoad" : "1",
         "MemWord" : "1",
+    }),
+    # LB
+    TestUnit("10000010011010110000000100100011", {
+        "IsTableB" : "1",
+        "IsMem" : "1",
+        "Offset" : "0000000100100011",
+        "MemSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "Ra" : "10011",
+        "Rb" : "01011",
+        "Rd" : "01011",
+        "MemLoad" : "1",
+    }),
+    # LBU
+    TestUnit("10010010011010110000000100100011", {
+        "IsTableB" : "1",
+        "IsMem" : "1",
+        "Offset" : "0000000100100011",
+        "ALUOpCode" : "0011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "Ra" : "10011",
+        "Rb" : "01011",
+        "Rd" : "01011",
+        "MemLoad" : "1",
+    }),
+    # SW
+    TestUnit("10101110011010110000000100100011", {
+        "IsTableB" : "1",
+        "IsMem" : "1",
+        "Offset" : "0000000100100011",
+        "ALUOpCode" : "0011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "Ra" : "10011",
+        "Rb" : "01011",
+        "Rd" : "01011",
+        "MemWord" : "1",
+        "MemStore" : "1"
+    }),
+    # SB
+    TestUnit("10100010011010110000000100100011", {
+        "IsTableB" : "1",
+        "IsMem" : "1",
+        "Offset" : "0000000100100011",
+        "ALUOpCode" : "0011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "Ra" : "10011",
+        "Rb" : "01011",
+        "Rd" : "01011",
+        "MemStore" : "1"
     }),
 ]
 
