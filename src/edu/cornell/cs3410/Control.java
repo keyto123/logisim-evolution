@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class Control extends InstanceFactory {
 	
-	static final int NUM_OUTPUTS = 26;
+	static final int NUM_OUTPUTS = 27;
 	static final int CONTROL_WIDTH = 200;
 	static final int SPACING = 30;
 	static final int CONTROL_HEIGHT = (NUM_OUTPUTS + 1) * SPACING;
@@ -43,6 +43,7 @@ public class Control extends InstanceFactory {
             "Immediate",
             "Offset",
             "JumpTarget",
+            "ShiftAmount",
             "ALUOpCode",
             "ImmediateSelect",
             "ImmSignExt",
@@ -71,6 +72,7 @@ public class Control extends InstanceFactory {
             get_out_port(16), //Immediate
             get_out_port(16), //Offset
             get_out_port(26), //JumpTarget
+            get_out_port(5), //ShiftAmount
             get_out_port(4), //ALUOpCode
             get_out_port(1),
             get_out_port(1),
@@ -134,7 +136,8 @@ public class Control extends InstanceFactory {
     private Value getIsRegister(int instruction) {
         // Get first 6 bits of instruction
         int opcode = instruction >> 26;
-        if (opcode == 0b0) {
+        int lastSixBits = instruction & 0b111111;
+        if (opcode == 0b0 && lastSixBits != 0b001000 && lastSixBits != 0b001001) {
             return getValue(1, 1);
         } else {
             return getValue(0, 1);
@@ -210,6 +213,15 @@ public class Control extends InstanceFactory {
             return getValue(instruction & 0b11111111111111111111111111, 26);
         } else {
             return getValue(0, 26);
+        }
+    }
+
+    private Value getShiftAmount(int instruction) {
+        if (getIsRegister(instruction).toIntValue() == 1) {
+            //Shamt is bits 6-10 for Shift instruction, but guaranteed to be 0 for non-shift R type instructions
+            return getValue(instruction >> 6 & 0b11111, 5);
+        } else {
+            return getValue(0,5);
         }
     }
 
@@ -302,7 +314,11 @@ public class Control extends InstanceFactory {
 
     private Value getRa(int instruction) {
         int opcode = instruction >> 26;
-        if(opcode == 0b000010 || opcode == 0b000011) {
+        int lastSixBits = instruction & 0b111111;
+        if(opcode == 0b000010 || opcode == 0b000011 || opcode == 0b001111) {
+            return getValue(0,5);
+        }
+        if(opcode == 0b0 && (lastSixBits >= 0b0 && lastSixBits <= 0b000011)) {
             return getValue(0,5);
         }
         else {
@@ -314,7 +330,8 @@ public class Control extends InstanceFactory {
 
     private Value getRb(int instruction) {
         int opcode = instruction >> 26;
-        if(opcode == 0b001111 || getIsJump(instruction).toIntValue() == 1 || getIsImmediate(instruction).toIntValue() == 1) {
+        if(opcode == 0b001111 || getIsJump(instruction).toIntValue() == 1 || getIsImmediate(instruction).toIntValue() == 1 ||
+            opcode == 0b000001) {
             return getValue(0,5);
         }
         else {
@@ -348,10 +365,11 @@ public class Control extends InstanceFactory {
     private Value getPCSelect(int instruction) {
         int opcode = instruction >> 26;
         int lastSixBits = instruction & 0b111111;
-        // JAL and JALR
-        if(opcode == 0b000011 || (opcode == 0 && lastSixBits == 0b001001)) {
+        // JR and JALR
+        if(opcode == 0 && (lastSixBits == 0b001000 || lastSixBits == 0b001001)) {
             return getValue(0b01, 2);
         }
+        // J and JAL
         else if (opcode == 0b000010 || opcode == 0b000011) {
             return getValue(0b10, 2);
         }
@@ -429,26 +447,29 @@ public class Control extends InstanceFactory {
     private Value getFuncField(int instruction) {
         int opcode = instruction >> 26;
         if(opcode == 0b0) {
-            switch (instruction & 0b111111) {
-                case 0b000000: // SLL
-                case 0b000010: // SRL
-                case 0b000011: // SRA
-                case 0b100001: // ADDU
-                case 0b100011: // SUBU
-                case 0b100100: // AND
-                case 0b100101: // OR
-                case 0b100110: // XOR
-                case 0b100111: // NOR
-                case 0b101010: // SLT
-                case 0b101011: // SLTU
-                case 0b001011: // MOVN
-                case 0b001010: // MOVZ
-                case 0b001000: // JR
-                case 0b001001: // JALR
-                    return getValue(1,1);
-                default:
-                    return getValue(0,1);
-            }
+            // switch (instruction & 0b111111) {
+            //     case 0b000000: // SLL
+            //     case 0b000010: // SRL
+            //     case 0b000011: // SRA
+            //     case 0b000100: // SLLV
+            //     case 0b
+            //     case 0b100001: // ADDU
+            //     case 0b100011: // SUBU
+            //     case 0b100100: // AND
+            //     case 0b100101: // OR
+            //     case 0b100110: // XOR
+            //     case 0b100111: // NOR
+            //     case 0b101010: // SLT
+            //     case 0b101011: // SLTU
+            //     case 0b001011: // MOVN
+            //     case 0b001010: // MOVZ
+            //     case 0b001000: // JR
+            //     case 0b001001: // JALR
+            //         return getValue(1,1);
+            //     default:
+            //         return getValue(0,1);
+            // }
+            return getValue(1,1);
         }
         return getValue(0,1);
     }
@@ -566,6 +587,9 @@ public class Control extends InstanceFactory {
                     break;
                 case "JumpTarget":
                     out = getJumpTarget(instruction);
+                    break;
+                case "ShiftAmount":
+                    out = getShiftAmount(instruction);
                     break;
                 case "ALUOpCode":
                     out = getALUOpCode(instruction);

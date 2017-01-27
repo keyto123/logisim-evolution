@@ -1,8 +1,9 @@
 class TestUnit:
 
-    outputs = ['IsImmediate', 'IsRegister', 'IsTableB', 'IsJump', 'IsBranch', 'IsMem', 'Immediate', 'Offset', 'JumpTarget', 'ALUOpCode', 'ImmediateSelect', 'ImmSignExt', 'CompSign', 'Ra', 'Rb', 'Rd',
-                'PCSelect', 'BranchSelect', 'MemLoad', 'MemStore', 'MemWord', 'MemSignExt', 'FuncField', 'SaControl', 'ASelect', 'ExecOut']
-    output_lens = ['1', '1', '1', '1', '1', '1', '16', '16', '26', '4', '1', '1', '1', '5', '5', '5', '2', '3', '1', '1', '1', '1', '1', '2', '2', '2']
+    outputs = ['IsImmediate', 'IsRegister', 'IsTableB', 'IsJump', 'IsBranch', 'IsMem', 'Immediate', 'Offset', 'JumpTarget', 'ShiftAmount',
+                 'ALUOpCode', 'ImmediateSelect', 'ImmSignExt', 'CompSign', 'Ra', 'Rb', 'Rd', 'PCSelect', 'BranchSelect', 'MemLoad', 'MemStore', 
+                 'MemWord', 'MemSignExt', 'FuncField', 'SaControl', 'ASelect', 'ExecOut']
+    output_lens = ['1', '1', '1', '1', '1', '1', '16', '16', '26', '5', '4', '1', '1', '1', '5', '5', '5', '2', '3', '1', '1', '1', '1', '1', '2', '2', '2']
 
     def __init__(self, inst, non_zero_outs):
         self.inst = inst
@@ -178,6 +179,203 @@ tests = [
         "FuncField" : "1",
         "ASelect" : "01",
         "ExecOut" : "01"
+    }),
+
+
+    # SLL
+    TestUnit("00000000000011011011000101000000", {
+        "IsRegister" : "1",
+        "ALUOpCode" : "0001",
+        "ShiftAmount" : "00101",
+        "Rb" : "01101",
+        "Rd" : "10110",
+        "SaControl" : "10",
+        "FuncField" : "1",
+    }),
+    # SRL
+    TestUnit("00000000000011011011000101000010", {
+        "IsRegister" : "1",
+        "ALUOpCode" : "0100",
+        "ShiftAmount" : "00101",
+        "Rb" : "01101",
+        "Rd" : "10110",
+        "SaControl" : "10",
+        "FuncField" : "1",
+    }),
+    # SRA
+    TestUnit("00000000000011011011000101000011", {
+        "IsRegister" : "1",
+        "ALUOpCode" : "0101",
+        "ShiftAmount" : "00101",
+        "Rb" : "01101",
+        "Rd" : "10110",
+        "SaControl" : "10",
+        "FuncField" : "1",
+    }),
+    # SLLV
+    TestUnit("00000010111011011011000000000100", {
+        "IsRegister" : "1",
+        "ALUOpCode" : "0001",
+        "Ra" : "10111",
+        "Rb" : "01101",
+        "Rd" : "10110",
+        "SaControl" : "11",
+        "FuncField" : "1",
+    }),
+    # SRLV
+    TestUnit("00000010111011011011000000000110", {
+        "IsRegister" : "1",
+        "ALUOpCode" : "0100",
+        "Ra" : "10111",
+        "Rb" : "01101",
+        "Rd" : "10110",
+        "SaControl" : "11",
+        "FuncField" : "1",
+    }),
+    # SRAV
+    TestUnit("00000010111011011011000000000111", {
+        "IsRegister" : "1",
+        "ALUOpCode" : "0101",
+        "Ra" : "10111",
+        "Rb" : "01101",
+        "Rd" : "10110",
+        "SaControl" : "11",
+        "FuncField" : "1",
+    }),
+
+
+    # LUI
+    TestUnit("00111100000011010000000100100011", {
+        "IsImmediate" : "1",
+        "ImmediateSelect" : "1",
+        "Immediate" : "0000000100100011",
+        "Rd" : "01101",
+        "SaControl" : "01",
+    }),
+
+
+
+    # Table B instructions
+    # J
+    TestUnit("00001000000000000000000100100011", {
+        "IsJump" : "1",
+        "IsTableB" : "1",
+        "JumpTarget" : "00000000000000000100100011",
+        "PCSelect" : "10",
+    }),
+    # JR
+    TestUnit("00000010011000000000000000001000", {
+        "IsJump" : "1",
+        "IsTableB" : "1",
+        "Ra" : "10011",
+        "PCSelect" : "01",
+        "FuncField" : "1",
+    }),
+    # JAL
+    TestUnit("00001100000000000000000100100011", {
+        "IsJump" : "1",
+        "IsTableB" : "1",
+        "JumpTarget" : "00000000000000000100100011",
+        "Rd" : "11111",
+        "PCSelect" : "10",
+        "ExecOut" : "11"
+    }),
+    # JALR
+    TestUnit("00000001011000001001100000001001", {
+        "IsJump" : "1",
+        "IsTableB" : "1",
+        "Ra" : "01011",
+        "Rd" : "10011",
+        "PCSelect" : "01",
+        "FuncField" : "1",
+        "ExecOut" : "11"
+    }),
+
+    # BEQ
+    TestUnit("00010001001100110000000100100011", {
+        "IsBranch" : "1",
+        "IsTableB" : "1",
+        "Offset" : "0000000100100011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "Ra" : "01001",
+        "Rb" : "10011",
+        "BranchSelect" : "101",
+        "CompSign" : "01",
+        "PCSelect" : "11",
+        "ASelect" : "10",
+    }),
+    # BNE
+    TestUnit("00010101001100110000000100100011", {
+        "IsBranch" : "1",
+        "IsTableB" : "1",
+        "Offset" : "0000000100100011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "Ra" : "01001",
+        "Rb" : "10011",
+        "BranchSelect" : "110",
+        "CompSign" : "01",
+        "PCSelect" : "11",
+        "ASelect" : "10",
+    }),
+    # BLEZ
+    TestUnit("00011001001000000000000100100011", {
+        "IsBranch" : "1",
+        "IsTableB" : "1",
+        "Offset" : "0000000100100011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "Ra" : "01001",
+        "BranchSelect" : "100",
+        "CompSign" : "01",
+        "PCSelect" : "11",
+        "ASelect" : "10",
+    }),
+    # BGTZ
+    TestUnit("00011101001000000000000100100011", {
+        "IsBranch" : "1",
+        "IsTableB" : "1",
+        "Offset" : "0000000100100011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "Ra" : "01001",
+        "BranchSelect" : "001",
+        "CompSign" : "01",
+        "PCSelect" : "11",
+        "ASelect" : "10",
+    }),
+    # BLTZ
+    TestUnit("00000101001000000000000100100011", {
+        "IsBranch" : "1",
+        "IsTableB" : "1",
+        "Offset" : "0000000100100011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "Ra" : "01001",
+        "BranchSelect" : "010",
+        "CompSign" : "01",
+        "PCSelect" : "11",
+        "ASelect" : "10",
+    }),
+    # BGEZ
+    TestUnit("00000101001000010000000100100011", {
+        "IsBranch" : "1",
+        "IsTableB" : "1",
+        "Offset" : "0000000100100011",
+        "ImmediateSelect" : "1",
+        "ImmSignExt" : "1",
+        "ALUOpCode" : "0011",
+        "Ra" : "01001",
+        "BranchSelect" : "011",
+        "CompSign" : "01",
+        "PCSelect" : "11",
+        "ASelect" : "10",
     }),
 ]
 
