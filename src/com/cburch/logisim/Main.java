@@ -81,6 +81,6 @@ public class Main {
 	/**
 	 * URL for the automatic updater
 	 */
-	public static final String UPDATE_URL = "http://www.cs.cornell.edu/courses/cs3410/2016fa/logisim/logisim_evolution_version.xml";
+	public static final String UPDATE_URL = "http://www.cs.cornell.edu/courses/cs3410/2017sp/logisim/logisim_evolution_version.xml";
 
 }
