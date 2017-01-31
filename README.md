@@ -1,4 +1,4 @@
-# CS 3410 students who want a ready-made jar file should download it from our [course page](http://www.cs.cornell.edu/courses/cs3410/2016sp/resources.php).
+# CS 3410 students who want a ready-made jar file should download it from our [course page](http://www.cs.cornell.edu/courses/cs3410/).
 
 logisim-evolution
 =================
