@@ -20,6 +20,7 @@ public class Components extends Library {
                 new AddTool(new Ram()),
                 new AddTool(new SPIM()),
                 new AddTool(new RamIO()),
+                new AddTool(new Control())
         });
     }
 
