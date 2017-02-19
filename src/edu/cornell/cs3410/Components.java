@@ -16,7 +16,6 @@ public class Components extends Library {
                 new AddTool(new Program32()),
                 new AddTool(new ALU()),
                 new AddTool(new Incrementer()),
-                new AddTool(new Control()),
                 new AddTool(new Video()),
                 new AddTool(new Ram()),
                 new AddTool(new SPIM()),
