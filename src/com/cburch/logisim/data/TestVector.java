@@ -105,6 +105,10 @@ public class TestVector {
 		private void parseData() throws IOException {
 			Value vals[] = new Value[columnName.length];
 			for (int i = 0; i < columnName.length; i++) {
+				if (!curLine.hasMoreTokens()) {
+					throw new IOException("Test Vector data format error (missing value for): "
+							+ columnName[i]);
+				}
 				String t = curLine.nextToken();
 
 				try {
@@ -117,7 +121,7 @@ public class TestVector {
 					columnRadix[i] = Value.radixOfLogString(columnWidth[i], t);
 			}
 			if (curLine.hasMoreTokens())
-				throw new IOException("Test Vector data format error: "
+				throw new IOException("Test Vector data format error (too many values): "
 						+ curLine.nextToken());
 			data.add(vals);
 		}
