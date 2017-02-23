@@ -124,8 +124,8 @@ class MenuProject extends Menu {
 		loadLibrary.add(loadJar);
 
 		add(addCircuit);
-		add(loadLibrary);
-		add(unload);
+		//add(loadLibrary);
+		//add(unload);
 		addSeparator();
 		add(moveUp);
 		add(moveDown);
