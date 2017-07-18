@@ -30,9 +30,12 @@
 
 package com.cburch.logisim.gui.start;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 //MAC import java.io.File;
+
+import javax.swing.ImageIcon;
 
 import net.roydesign.event.ApplicationEvent;
 import net.roydesign.mac.MRJAdapter;
@@ -79,6 +82,28 @@ class MacOsAdapter { // MAC extends ApplicationAdapter {
 		MRJAdapter.addAboutListener(myListener);
 	}
 
+	private static void setDockIcon() {
+		// Retrieve the Image object from the locally stored image file
+		// "frame" is the name of my JFrame variable, and "filename" is the name of the image file
+		Image image = new ImageIcon("resources/logisim/img/logisim-icon-128.png").getImage();
+
+		try {
+		    // Replace: import com.apple.eawt.Application
+		    String className = "com.apple.eawt.Application";
+		    Class<?> cls = Class.forName(className);
+
+		    // Replace: Application application = Application.getApplication();
+		    Object application = cls.newInstance().getClass().getMethod("getApplication")
+		        .invoke(null);
+
+		    // Replace: application.setDockIconImage(image);
+		    application.getClass().getMethod("setDockIconImage", java.awt.Image.class)
+		        .invoke(application, image);
+		}
+		catch (Exception e) {
+		}
+	}
+
 	/*
 	 * MAC public void handleOpenFile(com.apple.eawt.ApplicationEvent event) {
 	 * Startup.doOpen(new File(event.getFilename())); }
@@ -93,5 +118,6 @@ class MacOsAdapter { // MAC extends ApplicationAdapter {
 	public static void register() {
 		// MAC Application.getApplication().addApplicationListener(new
 		// MacOsAdapter());
+		setDockIcon();
 	}
 }

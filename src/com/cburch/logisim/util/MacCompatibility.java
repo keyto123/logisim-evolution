@@ -48,7 +48,7 @@ public class MacCompatibility {
 
 	public static boolean isPreferencesAutomaticallyPresent() {
 		try {
-			return MRJAdapter.isPreferencesAutomaticallyPresent();
+			return MRJAdapter.isPreferencesAutomaticallyPresent() || MRJAdapter.isPreferencesEnabled();
 		} catch (Exception t) {
 			return false;
 		}
