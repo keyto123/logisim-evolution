@@ -72,28 +72,26 @@ class MenuEdit extends Menu {
 				undo.setEnabled(true);
 			}
 
-			// If there is a project open...
-			if (proj != null)
-				// And you CAN redo an undo...
-				if (proj.getCanRedo()) {
-					// Get that action
-					Action lastRedo = proj.getLastRedoAction();
+			// If there is a project open and you CAN redo an undo...
+			if (proj != null && proj.getCanRedo()) {
+				// Get that action
+				Action lastRedo = proj.getLastRedoAction();
 
-					// Set the detailed, localized text
+				// Set the detailed, localized text
 
-					redo.setText(StringUtil.format(Strings.get("editRedoItem"),
-							lastRedo.getName()));
+				redo.setText(StringUtil.format(Strings.get("editRedoItem"),
+						lastRedo.getName()));
 
-					// Set it to enabled
-					redo.setEnabled(true);
-				} else { // If there is no project...
-							// Let them know they can't redo anything
-					redo.setText(StringUtil.format(Strings
-							.get("editCantRedoItem")));
+				// Set it to enabled
+				redo.setEnabled(true);
+			} else { // If there is no project...
+				// Let them know they can't redo anything
+				redo.setText(StringUtil.format(Strings
+						.get("editCantRedoItem")));
 
-					// And disable the button
-					redo.setEnabled(false);
-				}
+				// And disable the button
+				redo.setEnabled(false);
+			}
 		}
 	}
 
@@ -126,7 +124,7 @@ class MenuEdit extends Menu {
 
 		int menuMask = getToolkit().getMenuShortcutKeyMask();
 		undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, menuMask));
-		redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, menuMask));
+		redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, menuMask | KeyEvent.SHIFT_DOWN_MASK));
 		cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, menuMask));
 		copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, menuMask));
 		paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, menuMask));
