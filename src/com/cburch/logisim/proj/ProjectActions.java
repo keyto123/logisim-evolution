@@ -189,7 +189,7 @@ public class ProjectActions {
 		return file;
 	}
 
-	public static void displayException(Component parent, Exception ex) {
+	private static void displayException(Component parent, Exception ex) {
 		String msg = StringUtil.format(Strings.get("templateOpenError"),
 				ex.toString());
 		String ttl = Strings.get("templateOpenErrorTitle");
@@ -236,6 +236,16 @@ public class ProjectActions {
 	}
 	
 	public static void doMerge(Component parent, Project baseProject) {
+		boolean mergeDisabled = true;
+		if (mergeDisabled) {
+			BoundedJOptionPane.showMessageDialog(
+					parent,
+					"Merge functionality has been disabled for CS 3410!",
+					"Disabled!",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		JFileChooser chooser;
 		LogisimFile mergelib;
 		Loader loader = null;
