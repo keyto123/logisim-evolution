@@ -60,6 +60,7 @@ import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.LibraryTools;
 import com.cburch.logisim.tools.Tool;
+import com.cburch.logisim.util.BoundedJOptionPane;
 import com.cburch.logisim.util.JFileChoosers;
 import com.cburch.logisim.util.StringUtil;
 
@@ -262,10 +263,9 @@ public class ProjectActions {
 				return;
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
-				JOptionPane.showMessageDialog(
+				BoundedJOptionPane.showMessageDialog(
 						parent,
-						StringUtil.format(Strings.get("fileMergeError"),
-								ex.toString()),
+						StringUtil.format(Strings.get("fileMergeError"), ex.toString()),
 						Strings.get("FileMergeErrorItem"),
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -367,10 +367,9 @@ public class ProjectActions {
 			}
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
-				JOptionPane.showMessageDialog(
+				BoundedJOptionPane.showMessageDialog(
 						parent,
-						StringUtil.format(Strings.get("fileOpenError"),
-								ex.toString()),
+						StringUtil.format(Strings.get("fileOpenError"), ex.toString()),
 						Strings.get("fileOpenErrorTitle"),
 						JOptionPane.ERROR_MESSAGE);
 			}
