@@ -220,7 +220,7 @@ class LibraryManager {
 	}
 
 	public String getDescriptor(Loader loader, Library lib) {
-		if (loader.getBuiltin().getLibraries().contains(lib)) {
+		if (loader.getBuiltin().getLibrary(lib.getName()) != null) {
 			return desc_sep + lib.getName();
 		} else {
 			LibraryDescriptor desc = invMap.get(lib);

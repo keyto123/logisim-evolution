@@ -236,16 +236,6 @@ public class ProjectActions {
 	}
 	
 	public static void doMerge(Component parent, Project baseProject) {
-		boolean mergeDisabled = true;
-		if (mergeDisabled) {
-			BoundedJOptionPane.showMessageDialog(
-					parent,
-					"Merge functionality has been disabled for CS 3410!",
-					"Disabled!",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
 		JFileChooser chooser;
 		LogisimFile mergelib;
 		Loader loader = null;
