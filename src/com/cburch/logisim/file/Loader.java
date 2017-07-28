@@ -295,7 +295,9 @@ public class Loader implements LibraryLoader {
 		} finally {
 			filesOpening.pop();
 		}
-		ret.setName(toProjectName(actual));
+		if (ret != null) {
+			ret.setName(toProjectName(actual));
+		}
 		return ret;
 	}
 
