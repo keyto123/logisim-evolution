@@ -364,7 +364,7 @@ public class SelectionActions {
 			} else {
 				xnReverse = null;
 			}
-			clip.ClearLabels();
+			clip.clearLabels();
 		}
 
 		@Override

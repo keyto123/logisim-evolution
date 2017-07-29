@@ -96,7 +96,7 @@ class Clipboard {
 	 * This function is in charge of copy paste.
 	 * Now the tunnels' labels are not cleared except if it is requested to.
 	 */
-	private Clipboard(Selection sel, AttributeSet viewAttrs , boolean ClearLabels) {
+	private Clipboard(Selection sel, AttributeSet viewAttrs , boolean clearLabels) {
 		components = new HashSet<Component>();
 		oldAttrs = null;
 		newAttrs = null;
@@ -104,12 +104,11 @@ class Clipboard {
 			AttributeSet baseAttrs = base.getAttributeSet();
 			AttributeSet copyAttrs = (AttributeSet) baseAttrs.clone();
 			/* We clear all labels on the Clipboard */
-			if (copyAttrs.containsAttribute(StdAttr.LABEL)&&ClearLabels) {
+			if (copyAttrs.containsAttribute(StdAttr.LABEL) && clearLabels) {
 				if (!(base.getFactory() instanceof Tunnel)) {
 					copyAttrs.setValue(StdAttr.LABEL, "");
 				}
 			}
-			
 			Component copy = base.getFactory().createComponent(
 					base.getLocation(), copyAttrs);
 			components.add(copy);
@@ -120,13 +119,12 @@ class Clipboard {
 		}
 	}
 	
-	public void ClearLabels() {
+	public void clearLabels() {
 		for (Component comp : components) {
 			AttributeSet attrs = comp.getAttributeSet();
 			if (comp.getFactory() instanceof Tunnel) {
 				continue;
 			}
-			
 			if (attrs.containsAttribute(StdAttr.LABEL)) {
 				attrs.setValue(StdAttr.LABEL, "");
 			}
