@@ -66,7 +66,7 @@
                    embeddedWidth="100%" embeddedHeight="100%"
                    outdir="${basedir}/package"
                    outfile="${app.name}"
-                   nativeBundles="all"
+                   nativeBundles="image"
                    verbose="true">
 
             <fx:application name="${app.name}"
