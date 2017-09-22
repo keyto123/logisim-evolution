@@ -375,7 +375,7 @@ public class LogisimFile extends Library implements LibraryEventSource,CircuitLi
 			return null;
 		for (AddTool tool : tools) {
 			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
-			if (name.equals(factory.getName()))
+			if (name.equalsIgnoreCase(factory.getName()))
 				return factory.getSubcircuit();
 		}
 		return null;
