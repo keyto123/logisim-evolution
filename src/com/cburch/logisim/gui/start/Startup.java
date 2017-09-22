@@ -342,7 +342,7 @@ public class Startup {
 				return;
 			}
 			MacOsAdapter.register();
-			MacOsAdapter.addListeners(true);
+			MacOsAdapter.addListeners(false);
 		} catch (ClassNotFoundException e) {
 			return;
 		} catch (Exception t) {
