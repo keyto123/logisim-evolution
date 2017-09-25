@@ -372,6 +372,7 @@ public class CircuitState implements InstanceData {
 					toProcess = dirtyComponents.toArray();
 					break;
 				} catch (RuntimeException e) {
+					System.out.println(firstException);
 					if (firstException == null)
 						firstException = e;
 					if (tries == 0) {
@@ -396,7 +397,8 @@ public class CircuitState implements InstanceData {
 
 		CircuitState[] subs = new CircuitState[substates.size()];
 		for (CircuitState substate : substates.toArray(subs)) {
-			substate.processDirtyComponents();
+			/* TODO: Analyze why this bug happens, e.g. a substate that is null! */
+			if (substate != null) substate.processDirtyComponents();
 		}
 	}
 
