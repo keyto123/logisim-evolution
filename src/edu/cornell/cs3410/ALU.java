@@ -75,20 +75,20 @@ public class ALU extends InstanceFactory {
             break;
 
         case 0x9:
-        		ans = (A != B) ? 0x1 : 0x0;
-            break;
+    	    		ans = (A == B) ? 0x1 : 0x0;
+    	    		break;
+
             
         case 0xB:
-        	    ans = (A == B) ? 0x1 : 0x0;
+    			ans = (A != B) ? 0x1 : 0x0;
             break;
 
         case 0xD:
-        		ans = (A <= 0) ? 0x1 : 0x0;
+    			ans = (A > 0) ? 0x1 : 0x0;
             break;
-            
 
         case 0xF:
-        		ans = (A > 0) ? 0x1 : 0x0;
+    			ans = (A <= 0) ? 0x1 : 0x0;
             break;
         }
         Value out = Value.createKnown(BitWidth.create(32), ans);
