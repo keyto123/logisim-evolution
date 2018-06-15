@@ -14,7 +14,6 @@ public class LalaComp extends Library {
 		tools = Arrays.asList(new Tool[] { 
 					new AddTool(new ControlUnit()), new AddTool(new AluControl()),
 					new AddTool(new InstructionFetch()), new AddTool(new Execute()),
-					new AddTool(new RegisterManip()),
 				});
 	}
 
