@@ -15,6 +15,7 @@
         <delete dir="bin/com/cburch/"/>
         <delete dir="bin/com/hepia/"/>
         <delete dir="bin/edu/cornell"/>
+    	<delete dir="bin/edu/lala"/>
     </target>
 
     <target name="clean">

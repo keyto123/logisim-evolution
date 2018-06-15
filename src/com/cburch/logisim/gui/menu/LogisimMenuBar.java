@@ -58,6 +58,7 @@ public class LogisimMenuBar extends JMenuBar {
 			fpga.localeChanged();
 			simulate.localeChanged();
 			help.localeChanged();
+			lala.localeChanged();
 		}
 	}
 
@@ -137,6 +138,7 @@ public class LogisimMenuBar extends JMenuBar {
 	private MenuSimulate simulate;
 	private MenuHelp help;
 	private MenuFPGA fpga;
+	private MenuLala lala;
 
 	public LogisimMenuBar(JFrame parent, Project proj) {
 		this.parent = parent;
@@ -150,6 +152,7 @@ public class LogisimMenuBar extends JMenuBar {
 		add(fpga = new MenuFPGA(parent, this, proj));
 		add(new WindowMenu(parent));
 		add(help = new MenuHelp(this));
+		add(lala = new MenuLala(this));
 
 		LocaleManager.addLocaleListener(listener);
 		listener.localeChanged();
