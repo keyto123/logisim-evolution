@@ -37,8 +37,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,8 +65,7 @@ import com.cburch.logisim.util.LocaleListener;
  *
  * @author YSY
  */
-public class RegTabContent extends JScrollPane implements LocaleListener,
-		SimulatorListener {
+public class RegTabContent extends JScrollPane implements LocaleListener, SimulatorListener {
 	private class MyLabel extends JLabel {
 		private static final long serialVersionUID = 1L;
 
@@ -108,13 +109,19 @@ public class RegTabContent extends JScrollPane implements LocaleListener,
 
 		fillArray();
 	}
+	
+	private static List<List<String>> allRegisters = new ArrayList<List<String>>();
+	
+	public static List<List<String>> getRegContent() {
+		return allRegisters;
+	}
 
 	/**
-	 * This function will clear and fill the registers tab and refresh their
-	 * value. It will start by iterate over all circuits of the current project
-	 * to register all the "Register" components (providing their attributes are
-	 * correctly set). It will then fill the panel with each register found,
-	 * including their current value.
+	 * This function will clear and fill the registers tab and refresh their value.
+	 * It will start by iterate over all circuits of the current project to register
+	 * all the "Register" components (providing their attributes are correctly set).
+	 * It will then fill the panel with each register found, including their current
+	 * value.
 	 */
 	private void fillArray() {
 		int y = 0;
@@ -124,15 +131,15 @@ public class RegTabContent extends JScrollPane implements LocaleListener,
 
 		registers.clear();
 		panel.removeAll();
+		allRegisters.clear();
+		
 		for (Circuit circ : proj.getLogisimFile().getCircuits()) {
 			getAllRegisters(circ);
 		}
 		if (proj.getLogisimFile().getLibrary("prodis_v1.3") instanceof LoadedLibrary) {
-			if (((LoadedLibrary) proj.getLogisimFile()
-					.getLibrary("prodis_v1.3")).getBase() instanceof LogisimFile) {
-				for (Circuit circ : ((LogisimFile) ((LoadedLibrary) proj
-						.getLogisimFile().getLibrary("prodis_v1.3")).getBase())
-						.getCircuits()) {
+			if (((LoadedLibrary) proj.getLogisimFile().getLibrary("prodis_v1.3")).getBase() instanceof LogisimFile) {
+				for (Circuit circ : ((LogisimFile) ((LoadedLibrary) proj.getLogisimFile().getLibrary("prodis_v1.3"))
+						.getBase()).getCircuits()) {
 					getAllRegisters(circ);
 				}
 			}
@@ -164,20 +171,27 @@ public class RegTabContent extends JScrollPane implements LocaleListener,
 			for (Object name : objArr) {
 				c.gridy = y;
 				c.gridx = 0;
+				
 				String circuitName = name.toString().split("/")[0];
 				panel.add(new MyLabel(circuitName, Font.ITALIC, true), c);
 				c.gridx++;
+				
 				String registerName = name.toString().split("/")[1];
 				panel.add(new MyLabel(registerName), c);
 				c.gridx++;
+				
 				Component selReg = registers.get(name.toString());
 				CircuitState mainCircState = proj.getCircuitState();
 				while (mainCircState.getParentState() != null) { // Get the main
 																	// circuit
 					mainCircState = mainCircState.getParentState();
 				}
-				Value val = findVal(mainCircState, circuitName, selReg
-						.getEnd(0).getLocation()); // Get Q port location
+				Value val = findVal(mainCircState, circuitName, selReg.getEnd(0).getLocation()); // Get Q port location
+				
+				List<String> lala = new ArrayList<String>();
+				lala.add(registerName);
+				lala.add(val != null ? val.toHexString() : null);
+				allRegisters.add(lala);
 
 				if (val != null) {
 					panel.add(new MyLabel(val.toHexString()), c);
@@ -196,10 +210,10 @@ public class RegTabContent extends JScrollPane implements LocaleListener,
 	}
 
 	/**
-	 * This function will search for the value at a given location in a circuit
-	 * with the given name. The function will search iteratively in all
-	 * sub-circuits of the given circuit if it cannot be found directly, and
-	 * will return null if the value cannot be found.
+	 * This function will search for the value at a given location in a circuit with
+	 * the given name. The function will search iteratively in all sub-circuits of
+	 * the given circuit if it cannot be found directly, and will return null if the
+	 * value cannot be found.
 	 * 
 	 * @param cs
 	 *            The state of the circuit in which the value is searched.
@@ -226,8 +240,8 @@ public class RegTabContent extends JScrollPane implements LocaleListener,
 	}
 
 	/**
-	 * This function will register all the components of type "Register" contain
-	 * in the given circuit. The registers will only be registered if their
+	 * This function will register all the components of type "Register" contain in
+	 * the given circuit. The registers will only be registered if their
 	 * ATTR_SHOW_IN_TAB is set to true, and if their label is not empty.
 	 * 
 	 * @param circuit
@@ -237,11 +251,8 @@ public class RegTabContent extends JScrollPane implements LocaleListener,
 		for (Component comp : circuit.getNonWires()) {
 			if (comp.getFactory().getName().equals("Register")) {
 				if (comp.getAttributeSet().getValue(Register.ATTR_SHOW_IN_TAB)
-						&& !comp.getAttributeSet().getValue(StdAttr.LABEL)
-								.equals("")) {
-					registers.put(circuit.getName() + "/"
-							+ comp.getAttributeSet().getValue(StdAttr.LABEL),
-							comp);
+						&& !comp.getAttributeSet().getValue(StdAttr.LABEL).equals("")) {
+					registers.put(circuit.getName() + "/" + comp.getAttributeSet().getValue(StdAttr.LABEL), comp);
 				}
 			}
 		}

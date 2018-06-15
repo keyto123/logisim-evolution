@@ -30,7 +30,7 @@ public class InstructionFetch extends InstanceFactory {
 		setAttributes(new Attribute[] { StdAttr.FACING }, new Object[] { Direction.WEST });
 		
 		Bounds bounds = Bounds.create(-50, -20, 100, 40);
-		int size[] = new int[] { bounds.getWidth() / 2, bounds.getHeight() / 2 };
+		int size[] = LalaFunctions.getDistanceFromMiddle(bounds);
 		
 		setOffsetBounds(bounds);
 		

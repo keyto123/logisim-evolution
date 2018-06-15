@@ -34,22 +34,26 @@ public class ControlUnit extends InstanceFactory {
 
 		// 95% useless (5% = no (other)bugs with attributes
 		setAttributes(new Attribute[] { StdAttr.FACING }, new Object[] { Direction.WEST });
-
-		setOffsetBounds(Bounds.create(-40, -100, 80, 180));
+		
+		Bounds bounds = Bounds.create(-40, -100, 80, 180);
+		
+		setOffsetBounds(bounds);
+		
+		int size[] = LalaFunctions.getDistanceFromMiddle(bounds);
 
 		// Configure each port
 		Port ps[] = new Port[9];
-		ps[0] = new Port(-40, 0, Port.INPUT, 6); // Opcode
-		ps[1] = new Port(40, -70, Port.OUTPUT, 1); // RegDst
-		ps[2] = new Port(40, -50, Port.OUTPUT, 1); // AluSrc
-		ps[3] = new Port(40, -30, Port.OUTPUT, 1); // MemToReg
-		ps[4] = new Port(40, -10, Port.OUTPUT, 1); // RegWriter
-		ps[5] = new Port(40, 10, Port.OUTPUT, 1); // MemRead
-		ps[6] = new Port(40, 30, Port.OUTPUT, 1); // MemWrite
-		ps[7] = new Port(40, 50, Port.OUTPUT, 1); // Branch
-		ps[8] = new Port(40, 70, Port.OUTPUT, 2); // Aluop
+		ps[0] = new Port(-size[0], 0, Port.INPUT, 6); // Opcode
+		ps[1] = new Port(size[0], -70, Port.OUTPUT, 1); // RegDst
+		ps[2] = new Port(size[0], -50, Port.OUTPUT, 1); // AluSrc
+		ps[3] = new Port(size[0], -30, Port.OUTPUT, 1); // MemToReg
+		ps[4] = new Port(size[0], -10, Port.OUTPUT, 1); // RegWriter
+		ps[5] = new Port(size[0], 10, Port.OUTPUT, 1); // MemRead
+		ps[6] = new Port(size[0], 30, Port.OUTPUT, 1); // MemWrite
+		ps[7] = new Port(size[0], 50, Port.OUTPUT, 1); // Branch
+		ps[8] = new Port(size[0], 70, Port.OUTPUT, 2); // Aluop
 
-		ps[0].setToolTip(Strings.getter("Opcode (31-26)"));
+		ps[0].setToolTip(Strings.getter("Opcode: Receive bits 31-26 from opcode"));
 		ps[1].setToolTip(Strings.getter("Register Destination"));
 		ps[2].setToolTip(Strings.getter("Alu Source"));
 		ps[3].setToolTip(Strings.getter("Memory to Register"));

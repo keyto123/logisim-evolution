@@ -12,6 +12,10 @@ import edu.single.mips.ControlUnit;
 
 public class LalaFunctions {
 	
+	public static int[] getDistanceFromMiddle(Bounds bounds) {
+		return new int[]{bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight()};
+	}
+	
 	public static void setTitle(InstancePainter painter, InstanceFactory factory) {
 		// to maintain color
 		Graphics g = painter.getGraphics();
@@ -23,7 +27,7 @@ public class LalaFunctions {
 		
 		g.setColor(Color.BLACK);
 		g.drawRect(x - 1, y - 20, width + 1, 19);
-		g.fillRect(x, y - 19, width, 18);
+		g.fillRect(x, y - 19, width + 1, 18);
 		
 		g.setColor(Color.GRAY);
 		GraphicsUtil.drawCenteredText(g, factory.getName(), x + (width / 2), y - 10);

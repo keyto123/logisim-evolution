@@ -17,11 +17,13 @@ import edu.single.funcoes.LalaFunctions;
 public class Execute extends InstanceFactory {
 	public Execute() {
 		super("EX", Strings.getter("Execute"));
-		Bounds bounds = Bounds.create(-50, -50, 100, 100);
 		
+		Bounds bounds = Bounds.create(-50, -50, 100, 100);
 		this.setOffsetBounds(bounds);
+		
 		this.setAttributes(new Attribute[] { StdAttr.WIDTH }, new Object[] { BitWidth.create(32) });
-		int size[] = new int[] { bounds.getWidth() / 2, bounds.getHeight() / 2 };
+		
+		int size[] = LalaFunctions.getDistanceFromMiddle(bounds);
 		
 		Port ps[] = new Port[] {
 				new Port(-size[0], -20, Port.INPUT, StdAttr.WIDTH), 	// InputA
