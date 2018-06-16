@@ -1,86 +1,62 @@
 package com.cburch.logisim.gui.menu;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
-import com.cburch.logisim.gui.generic.LFrame;
+import com.cburch.logisim.proj.Project;
 
-import edu.single.mips.RegisterManip;
+import edu.single.mips.DataFlow_Frame;
 
 public class MenuLala extends Menu {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private LogisimMenuBar menubar;
-	private JMenuItem testing = new JMenuItem();
-	
-	// Todo: keep testing this -- write function for update state to simulate clock
+	private JMenuItem testing = new JMenuItem();	
 	private JMenuItem updateTest = new JMenuItem();
-
-	private String currentState[][] = new String[5][2];
-	private List<List<String>> fullState = new ArrayList<List<String>>();
 	
-	RegisterManip regMan = new RegisterManip();
+	private static DataFlow_Frame dataFlowFrame;
 
 	public MenuLala(LogisimMenuBar menubar) {
 		this.menubar = menubar;
-		testing.addActionListener(a -> testing_buttonFunction());
-		add(testing);
+		
+		this.testing.addActionListener(a -> testing_buttonFunction());
+		this.updateTest.addActionListener(a -> updateTest_buttonFunction());
+		
+		this.add(testing);
+		this.add(updateTest);
 	}
 	
-	private void updateState() {
-		String list[][] = regMan.getRegisterListContent();
-		System.out.println(list.length);
-		for (int i = 0, size = list.length, index = -1; i < size; i++, index = -1) {
-			switch(list[i][0]) {
-			case "IF_MAIN":
-				index = 0;
-				break;
-				
-			case "ID_MAIN":
-				index = 1;
-				break;
-				
-			case "EX_MAIN":
-				index = 2;
-				break;
-				
-			case "MEM_MAIN":
-				index = 3;
-				break;
-				
-			case "WB_MAIN":
-				index = 4;
-				break;
-			}
-			
-			if(index != -1) {
-				for(int j = 0; j < 2; j++) {
-					currentState[index][j] = list[i][j];
-				}				
-			}
-		}
-		printArray(currentState);
+	private void updateTest_buttonFunction() {
+		if(dataFlowFrame != null)
+			dataFlowFrame.getFlow().updateTable();
+		else
+			JOptionPane.showMessageDialog(this, "Uso incorreto, abra a tabela primeiro.");
 	}
 	
-	private <T> void printArray(T[][] obj) {
-		for(T[] ob : obj) {
-			for(T o : ob) {
-				System.out.print(o + " ");
-			}
-			System.out.println();
-		}
-	}
-
 	private void testing_buttonFunction() {
-		LFrame frame = new LFrame();
-		frame.setTitle("Base frame for Register table");
-		frame.setAlwaysOnTop(true);
-		frame.setSize(150, 150);
-
-		updateState();
-
-		frame.setVisible(true);
+		dataFlowFrame = new DataFlow_Frame();
+		dataFlowFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				dataFlowFrame.dispose();
+				dataFlowFrame = null;
+			}
+		});
+	}
+	
+	public Project getProject() {
+		return this.menubar.getProject();
+	}
+	
+	public static DataFlow_Frame getDataFlowFrame() {
+		return dataFlowFrame;
 	}
 
 	@Override
@@ -92,5 +68,6 @@ public class MenuLala extends Menu {
 	public void localeChanged() {
 		this.setText("lala");
 		testing.setText("Testing");
+		updateTest.setText("updateTest");
 	}
 }

@@ -1128,7 +1128,7 @@ public class ProgramAssembler {
 		return pass2(lines, start_address, sym);
 	}
 
-	static String disassemble(int instr, int addr) {
+	public static String disassemble(int instr, int addr) {
 		int op = (instr >> 26) & 0x3f;
 		Command cmd;
 		if (op == 0) {

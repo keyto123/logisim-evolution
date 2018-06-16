@@ -57,7 +57,7 @@ public class ProgramState implements InstanceData, Cloneable {
 		}
 	}
 
-	String decode(int i) {
+	public String decode(int i) {
 		return ProgramAssembler.disassemble(code.instr(i), 4 * i);
 	}
 

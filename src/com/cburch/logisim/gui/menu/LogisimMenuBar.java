@@ -48,6 +48,8 @@ import com.cburch.logisim.util.LocaleListener;
 import com.cburch.logisim.util.LocaleManager;
 import com.cburch.logisim.util.WindowMenu;
 
+import edu.single.mips.ComponentsUtil;
+
 @SuppressWarnings("serial")
 public class LogisimMenuBar extends JMenuBar {
 	private class MyListener implements LocaleListener {
@@ -152,7 +154,9 @@ public class LogisimMenuBar extends JMenuBar {
 		add(fpga = new MenuFPGA(parent, this, proj));
 		add(new WindowMenu(parent));
 		add(help = new MenuHelp(this));
+		
 		add(lala = new MenuLala(this));
+		ComponentsUtil.setMenuLala(lala);
 
 		LocaleManager.addLocaleListener(listener);
 		listener.localeChanged();
