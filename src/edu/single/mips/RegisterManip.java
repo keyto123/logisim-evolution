@@ -9,9 +9,31 @@ public class RegisterManip {
 	private List<List<String>> registerList = RegTabContent.getRegContent();
 
 	String registerListContent[][];
-
+	
 	public RegisterManip() {
 		updateTable();
+	}
+	
+	public static int getRegisterIndex(String register) {
+		switch (register) {
+		case "IF_MAIN":
+			return 0;
+
+		case "ID_MAIN":
+			return 1;
+
+		case "EX_MAIN":
+			return 2;
+
+		case "MEM_MAIN":
+			return 3;
+
+		case "WB_MAIN":
+			return 4;
+
+		default:
+			return -1;
+		}
 	}
 
 	private void updateTable() {
@@ -31,4 +53,6 @@ public class RegisterManip {
 		updateTable();
 		return registerListContent;
 	}
+	
+	
 }

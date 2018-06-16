@@ -2,15 +2,46 @@ package edu.single.funcoes;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.instance.InstanceFactory;
 import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.util.GraphicsUtil;
 
+import edu.single.mips.ComponentsUtil;
 import edu.single.mips.ControlUnit;
 
 public class LalaFunctions {
+	
+	public static List<String> getComponentValue(String componentName, int portIndex) {
+		List<String> result = new ArrayList<String>();
+		
+		Iterator<Component> components = ComponentsUtil.getComponentsIterator();
+		while(components.hasNext()) {
+			Component comp = components.next();
+			if(comp.getFactory().getName().equals(componentName)) {
+				result.add(ComponentsUtil.getCircuitState().getValue(comp.getEnd(portIndex).getLocation()).toDecimalString(true));
+			}
+		}
+		
+		return result;
+	}
+	
+	public static <T> void printArray(T[][] obj) {
+		StringBuilder bs = new StringBuilder();
+		for(T[] ob : obj) {
+			for(T o : ob) {
+				bs.append(o);
+				bs.append(" ");
+			}
+			bs.append("\n");
+		}
+		System.out.println(bs.toString());
+	}
 	
 	public static int[] getDistanceFromMiddle(Bounds bounds) {
 		return new int[]{bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight()};
