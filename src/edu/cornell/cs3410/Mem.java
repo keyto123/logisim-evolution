@@ -32,8 +32,6 @@ import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringGetter;
 import com.cburch.logisim.util.StringUtil;
 
-import edu.single.funcoes.LalaFunctions;
-
 abstract class Mem extends InstanceFactory {
 	// Note: The code is meant to be able to handle up to 32-bit addresses, but it
 	// hasn't been debugged thoroughly. There are two definite changes I would

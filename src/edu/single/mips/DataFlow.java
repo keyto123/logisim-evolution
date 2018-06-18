@@ -1,16 +1,21 @@
 package edu.single.mips;
 
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
+import com.cburch.logisim.proj.Project;
 
 import edu.cornell.cs3410.ProgramAssembler;
 import edu.single.funcoes.LalaFunctions;
 
 public class DataFlow {
 
+	private Project proj;
+	
 	private String currentState[][] = new String[5][2];
 	private String list[][];
 
@@ -21,7 +26,8 @@ public class DataFlow {
 	private TableColumnModel columnModel;
 	private static final String[] stages = { " IF", " ID", " EX", "MEM", " WB" };
 
-	public DataFlow() {
+	public DataFlow(Project proj) {
+		this.proj = proj;
 		this.updateState();
 		this.createTable();
 
@@ -48,11 +54,51 @@ public class DataFlow {
 			this.columnModel.getColumn(i).setHeaderValue(i);
 		}
 	}
+	
+	private String getInstructionElement(String code, int pos) {
+		String instruction = new String(code);
+		instruction.replaceAll(",", "");
+		instruction.replaceAll("$", "");
+		String instructionSplit[] = instruction.split(" ");
+		for(String s : instructionSplit) {
+			System.out.println(s);
+		}
+		
+		return instructionSplit[pos];
+	}
+	
+	private boolean checkHazard(int level) {
+		int lastColumn = table.getColumnCount() - 1;
+		String currentCodeRegisters[] = new String[2];
+		
+		for(int i = 0; i < 2; i++) {
+			currentCodeRegisters[i] = getInstructionElement(currentState[0][0], i + 2);
+		}
+		
+		switch(level) {
+		case 0:
+			for(String currentReg : currentCodeRegisters) {
+				for(int i = 1; i <= 2; i++) {
+					String reg = getInstructionElement(table.getValueAt(i, lastColumn - i).toString(), 1);
+					if(currentReg.equals(reg)) {
+						
+					}
+				}
+			}
+			break;
+		}
+		return false;
+	}
 
 	private String getCurrentCode() {
 		String value = null, currentCode = null;
 
-		value = LalaFunctions.getComponentValue("MIPSProgramROM", 1).get(0);
+		List<String> valueList = LalaFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1);
+		if(valueList.isEmpty()) {
+			return null;
+		}
+		
+		value = valueList.get(0);
 
 		if (value != null) {
 			currentCode = ProgramAssembler.disassemble(Integer.parseInt(value), 0);

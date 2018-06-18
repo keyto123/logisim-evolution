@@ -47,6 +47,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -94,6 +95,8 @@ import com.cburch.logisim.util.LocaleListener;
 import com.cburch.logisim.util.LocaleManager;
 import com.cburch.logisim.util.StringUtil;
 import com.cburch.logisim.util.VerticalSplitPane;
+
+import edu.single.funcoes.ProjectUtils;
 
 public class Frame extends LFrame implements LocaleListener {
 	class MyProjectListener implements ProjectListener, LibraryListener,
@@ -354,7 +357,6 @@ public class Frame extends LFrame implements LocaleListener {
 
 	public Frame(Project proj) {
 		this.proj = proj;
-
 		setBackground(Color.white);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new MyWindowListener());

@@ -1,8 +1,9 @@
 package edu.single.mips;
 
-import com.cburch.logisim.gui.menu.MenuLala;
 import com.cburch.logisim.instance.InstanceState;
 import com.cburch.logisim.std.wiring.Clock;
+
+import edu.single.funcoes.ProjectUtils;
 
 public class ClkRegister extends Clock {
 
@@ -15,7 +16,7 @@ public class ClkRegister extends Clock {
 		if (clockState != oldClockState) {
 			oldClockState = clockState;
 			if (clockState == 0) {
-				DataFlow_Frame f = MenuLala.getDataFlowFrame();
+				DataFlow_Frame f = ProjectUtils.getDataFlowFrame(state.getProject());
 				if (f != null) {
 					f.getFlow().updateTable();
 				}

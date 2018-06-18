@@ -26,8 +26,8 @@ import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 
 import edu.cornell.cs3410.ProgramAssembler.Listing;
+import edu.single.funcoes.ProjectUtils;
 import edu.single.funcoes.LalaFunctions;
-import edu.single.mips.ComponentsUtil;
 
 /**
  * Represents a program ROM.
@@ -55,7 +55,6 @@ public class Program32 extends InstanceFactory {
 
 	public Program32() {
 		super("MIPSProgramROM", new SimpleStringGetter("MIPS Program ROM"));
-		ComponentsUtil.addRom(this);
 		setAttributes(new Attribute[] { CONTENTS_ATTR }, new Object[] { new Listing() });
 		setOffsetBounds(Bounds.create(-1 * CHIP_WIDTH, -1 * CHIP_DEPTH / 2, CHIP_WIDTH, CHIP_DEPTH));
 		setPorts(new Port[] { new Port(10 - CHIP_WIDTH, CHIP_DEPTH / 2, Port.INPUT, PC_WIDTH),

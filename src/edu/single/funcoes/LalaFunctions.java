@@ -10,21 +10,25 @@ import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.instance.InstanceFactory;
 import com.cburch.logisim.instance.InstancePainter;
+import com.cburch.logisim.instance.StdAttr;
+import com.cburch.logisim.proj.Project;
+import com.cburch.logisim.proj.ProjectActions;
 import com.cburch.logisim.util.GraphicsUtil;
 
-import edu.single.mips.ComponentsUtil;
 import edu.single.mips.ControlUnit;
 
 public class LalaFunctions {
 	
-	public static List<String> getComponentValue(String componentName, int portIndex) {
+	public static List<String> getComponentValue(Project proj, String componentName, String label, int portIndex) {
 		List<String> result = new ArrayList<String>();
 		
-		Iterator<Component> components = ComponentsUtil.getComponentsIterator();
+		Iterator<Component> components = ProjectUtils.getComponentsIterator(proj);
 		while(components.hasNext()) {
 			Component comp = components.next();
 			if(comp.getFactory().getName().equals(componentName)) {
-				result.add(ComponentsUtil.getCircuitState().getValue(comp.getEnd(portIndex).getLocation()).toDecimalString(true));
+				if(label == null || comp.getAttributeSet().getValue(StdAttr.LABEL).equals(label)) {
+					result.add(proj.getCircuitState().getValue(comp.getEnd(portIndex).getLocation()).toDecimalString(true));					
+				}
 			}
 		}
 		
