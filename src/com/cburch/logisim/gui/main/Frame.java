@@ -96,8 +96,6 @@ import com.cburch.logisim.util.LocaleManager;
 import com.cburch.logisim.util.StringUtil;
 import com.cburch.logisim.util.VerticalSplitPane;
 
-import edu.single.funcoes.ProjectUtils;
-
 public class Frame extends LFrame implements LocaleListener {
 	class MyProjectListener implements ProjectListener, LibraryListener,
 			CircuitListener, PropertyChangeListener, ChangeListener {
