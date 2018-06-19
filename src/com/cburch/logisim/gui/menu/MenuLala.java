@@ -6,8 +6,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import com.cburch.logisim.proj.Project;
-
 import edu.single.mips.DataFlow_Frame;
 
 public class MenuLala extends Menu {
