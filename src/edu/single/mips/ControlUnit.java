@@ -3,7 +3,6 @@ package edu.single.mips;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import com.bfh.logisim.fpgaboardeditor.Strings;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.BitWidth;
 import com.cburch.logisim.data.Bounds;
@@ -14,20 +13,44 @@ import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.instance.InstanceState;
 import com.cburch.logisim.instance.Port;
 import com.cburch.logisim.instance.StdAttr;
+import com.cburch.logisim.tools.Strings;
 import com.cburch.logisim.util.GraphicsUtil;
 
 import edu.single.funcoes.LalaFunctions;
 
 public class ControlUnit extends InstanceFactory {
 	
-	public int RegDst = 0;
-	public int AluSrc = 0;
-	public int MemToReg = 0;
-	public int RegWriter = 0;
-	public int MemRead = 0;
-	public int MemWrite = 0;
-	public int Branch = 0;
-	public int Aluop = 0;
+	
+	// ports index
+	public static final int INSTRUCTION = 	0;
+	public static final int REGDST = 	1;
+	public static final int ALUSRC = 	2;
+	public static final int MEMTOREG = 	3;
+	public static final int REGWRITER = 4;
+	public static final int MEMREAD = 	5;
+	public static final int MEMWRITE = 	6;
+	public static final int BRANCH = 	7;
+	public static final int ALUOP = 	8;
+	
+	private final static int PORTINDEX[] = {
+			INSTRUCTION, REGDST, ALUSRC, MEMTOREG, REGWRITER,
+			MEMREAD, MEMWRITE, BRANCH, ALUOP
+	};
+	
+	// ports
+	private int regDst = 0;
+	private int aluSrc = 0;
+	private int memToReg = 0;
+	private int regWriter = 0;
+	private int memRead = 0;
+	private int memWrite = 0;
+	private int branch = 0;
+	private int aluOp = 0;
+	
+	// helpful
+	private int opcode = 0;
+	private int aluCodeType = 0;
+	private int funct = 0;
 	
 	public ControlUnit() {
 		super("Control Unit");
@@ -42,66 +65,71 @@ public class ControlUnit extends InstanceFactory {
 		int size[] = LalaFunctions.getDistanceFromMiddle(bounds);
 
 		// Configure each port
-		Port ps[] = new Port[9];
-		ps[0] = new Port(-size[0], 0, Port.INPUT, 6); // Opcode
-		ps[1] = new Port(size[0], -70, Port.OUTPUT, 1); // RegDst
-		ps[2] = new Port(size[0], -50, Port.OUTPUT, 1); // AluSrc
-		ps[3] = new Port(size[0], -30, Port.OUTPUT, 1); // MemToReg
-		ps[4] = new Port(size[0], -10, Port.OUTPUT, 1); // RegWriter
-		ps[5] = new Port(size[0], 10, Port.OUTPUT, 1); // MemRead
-		ps[6] = new Port(size[0], 30, Port.OUTPUT, 1); // MemWrite
-		ps[7] = new Port(size[0], 50, Port.OUTPUT, 1); // Branch
-		ps[8] = new Port(size[0], 70, Port.OUTPUT, 2); // Aluop
+		Port ps[] = new Port[] {
+			new Port(-size[0], 0, Port.INPUT, 32), // Opcode
+			new Port(size[0], -70, Port.OUTPUT, 1), // RegDst
+			new Port(size[0], -50, Port.OUTPUT, 1), // AluSrcm
+			new Port(size[0], -30, Port.OUTPUT, 1), // MemToReg
+			new Port(size[0], -10, Port.OUTPUT, 1), // RegWriter
+			new Port(size[0], 10, Port.OUTPUT, 1), // MemRead
+			new Port(size[0], 30, Port.OUTPUT, 1), // MemWrite
+			new Port(size[0], 50, Port.OUTPUT, 1), // Branch
+			new Port(size[0], 70, Port.OUTPUT, 4) // Aluop				
+		};
 
-		ps[0].setToolTip(Strings.getter("Opcode: Receive bits 31-26 from opcode"));
-		ps[1].setToolTip(Strings.getter("Register Destination"));
-		ps[2].setToolTip(Strings.getter("Alu Source"));
-		ps[3].setToolTip(Strings.getter("Memory to Register"));
-		ps[4].setToolTip(Strings.getter("Register Writer"));
-		ps[5].setToolTip(Strings.getter("Memory Read"));
-		ps[6].setToolTip(Strings.getter("Memory Write"));
-		ps[7].setToolTip(Strings.getter("Branch"));
-		ps[8].setToolTip(Strings.getter("Alu Op"));
+		ps[INSTRUCTION].setToolTip(Strings.getter("Opcode: Receive bits 31-26 from opcode"));
+		ps[REGDST].setToolTip(Strings.getter("Register Destination"));
+		ps[ALUSRC].setToolTip(Strings.getter("Alu Source"));
+		ps[MEMTOREG].setToolTip(Strings.getter("Memory to Register"));
+		ps[REGWRITER].setToolTip(Strings.getter("Register Writer"));
+		ps[MEMREAD].setToolTip(Strings.getter("Memory Read"));
+		ps[MEMWRITE].setToolTip(Strings.getter("Memory Write"));
+		ps[BRANCH].setToolTip(Strings.getter("Branch"));
+		ps[ALUOP].setToolTip(Strings.getter("Alu Op"));
 
 		setPorts(ps);
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
-		int opcode = state.getPortValue(0).toIntValue();
-		RegDst = 0;
-		AluSrc = 0;
-		MemToReg = 0;
-		RegWriter = 0;
-		MemRead = 0;
-		MemWrite = 0;
-		Branch = 0;
-		Aluop = 0;
+		int instruction = state.getPortValue(INSTRUCTION).toIntValue();
+		regDst = 0;
+		aluSrc = 0;
+		memToReg = 0;
+		regWriter = 0;
+		memRead = 0;
+		memWrite = 0;
+		branch = 0;
+		aluOp = 0;
 
-		LalaFunctions.SetControlUnitOutput(this, opcode);
+		aluCodeType = 0x0;
+		
+		this.opcode = LalaFunctions.getBits(instruction, 26, 6);
+		this.funct = LalaFunctions.getBits(instruction, 0, 6);
+		
+		this.SetControlUnitOutput(opcode);
+		aluOp = ControlUnit.computeAluOp(aluCodeType, funct);
 
 		// "convert" the values to the used Value class
-		Value regdst = Value.createKnown(BitWidth.create(1), RegDst);
-		Value alusrc = Value.createKnown(BitWidth.create(1), AluSrc);
-		Value memtoreg = Value.createKnown(BitWidth.create(1), MemToReg);
-		Value regwriter = Value.createKnown(BitWidth.create(1), RegWriter);
-		Value memread = Value.createKnown(BitWidth.create(1), MemRead);
-		Value memwrite = Value.createKnown(BitWidth.create(1), MemWrite);
-		Value branch = Value.createKnown(BitWidth.create(1), Branch);
-		Value aluop = Value.createKnown(BitWidth.create(2), Aluop);
+		Value values[] = new Value[] {
+				null,
+				Value.createKnown(BitWidth.create(1), regDst),
+				Value.createKnown(BitWidth.create(1), aluSrc),
+				Value.createKnown(BitWidth.create(1), memToReg),
+				Value.createKnown(BitWidth.create(1), regWriter),
+				Value.createKnown(BitWidth.create(1), memRead),
+				Value.createKnown(BitWidth.create(1), memWrite),
+				Value.createKnown(BitWidth.create(1), branch),
+				Value.createKnown(BitWidth.create(4), aluOp),
+		};
 
-		// ??
 		int delay = 6;
-
-		// Set values to the ports
-		state.setPort(1, regdst, delay);
-		state.setPort(2, alusrc, delay);
-		state.setPort(3, memtoreg, delay);
-		state.setPort(4, regwriter, delay);
-		state.setPort(5, memread, delay);
-		state.setPort(6, memwrite, delay);
-		state.setPort(7, branch, delay);
-		state.setPort(8, aluop, delay);
+		
+		for(int index : PORTINDEX) {
+			if(index != 0) {
+				state.setPort(index, values[index], delay);
+			}
+		}
 	}
 
 	@Override
@@ -132,5 +160,108 @@ public class ControlUnit extends InstanceFactory {
 		Graphics g = painter.getGraphics();
 		g.setColor(Color.BLACK);
 		g.drawRect(7, 3, 8, 12);
+	}
+	
+	public static int computeAluOp(int codeType, int funct) {
+		int alu_op = 0;
+		switch (codeType) {
+		case 0x0: // lw | sw
+			alu_op = 0x2;
+			break;
+
+		case 0x1: // beq
+			alu_op = 0x6;
+			break;
+
+		case 0x2: // R
+		case 0x3:
+			switch (funct) {
+			case 0x0: // sll(shift left logical)
+				alu_op = 0x0;
+				break;
+
+			case 0x2: // srl(shift right logical)
+				alu_op = 0x4;
+				break;
+
+			case 0x3: // sra(shift right arithmetic)
+				alu_op = 0x5;
+				break;
+
+			case 0x20: // add
+				alu_op = 0x2;
+				break;
+
+			case 0x21: // addu
+				alu_op = 0x3;
+				break;
+
+			case 0x22: // sub
+				alu_op = 0x6;
+				break;
+
+			case 0x23: // subu
+				alu_op = 0x7;
+				break;
+
+			case 0x24: // and
+				alu_op = 0x8;
+				break;
+
+			case 0x25: // or
+				alu_op = 0xA;
+				break;
+
+			case 0x26: // xor
+				alu_op = 0xC;
+				break;
+
+			case 0x27: // nor
+				alu_op = 0xE;
+				break;
+			}
+		}
+		return alu_op;
+	}
+	
+	private void SetControlUnitOutput(int opcode) {
+		switch (opcode) {
+		case 0x0: // R
+			regDst = 1;
+			regWriter = 1;
+			aluCodeType = 0x2;
+			break;
+
+		// case 0x5: // bne
+		case 0x4: // beq
+			aluCodeType = 1;
+		case 0x2: // jump
+			branch = 1;
+			break;
+
+		case 0x8: // addi
+		case 0x9: // addiu
+			// case 0xC: // andi
+			// case 0xD: // ori
+			aluSrc = 1;
+			regWriter = 1;
+			// Aluop = 0x2; aluop 0 works for addi and addiu
+			break;
+
+		case 0x23: // lw
+			regWriter = 1;
+			aluSrc = 1;
+			memToReg = 1;
+			memRead = 1;
+			break;
+
+		case 0x2B: // sw
+			aluSrc = 1;
+			memWrite = 1;
+			break;
+
+		default:
+			break;
+		}
 	}
 }
