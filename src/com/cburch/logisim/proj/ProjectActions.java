@@ -64,8 +64,6 @@ import com.cburch.logisim.util.BoundedJOptionPane;
 import com.cburch.logisim.util.JFileChoosers;
 import com.cburch.logisim.util.StringUtil;
 
-import edu.single.funcoes.ProjectUtils;
-
 public class ProjectActions {
 	private static String FILE_NAME_FORMAT_ERROR = "FileNameError";
 	private static String FILE_NAME_KEYWORD_ERROR = "ExistingToolName";
