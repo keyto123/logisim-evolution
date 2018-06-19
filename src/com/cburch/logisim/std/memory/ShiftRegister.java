@@ -348,7 +348,8 @@ public class ShiftRegister extends InstanceFactory {
 		if (data == null) {
 			for (int stage = 0; stage < len; stage++) {
 			DrawDataBlock(painter, xpos, ypos, len, wid, stage,
-					data.get(len - stage - 1).toIntValue(), parallelObj);
+					//data.get(len - stage - 1).toIntValue(), parallelObj);
+					0, parallelObj);
 			}
 		}
 		else {
