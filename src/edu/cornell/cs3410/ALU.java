@@ -19,26 +19,92 @@ public class ALU extends InstanceFactory {
 	public ALU() {
 		super("Mips ALU");
 		setOffsetBounds(Bounds.create(-30, -50, 60, 100));
-		Port ps[] = new Port[6];
-		ps[0] = new Port(-30, -30, Port.INPUT, 32); // A
-		ps[0].setToolTip(Strings.getter("A"));
-		ps[1] = new Port(-30, 30, Port.INPUT, 32); // B
-		ps[1].setToolTip(Strings.getter("B"));
-		ps[2] = new Port(-10, 40, Port.INPUT, 4); // Alu OP
-		ps[2].setToolTip(Strings.getter("Alu Opcode"));
-		ps[3] = new Port(10, 30, Port.INPUT, 5); // Shift Amount
+
+		// Adapted by lala
+		Port ps[] = new Port[] { 
+				new Port(-30, -30, Port.INPUT, 32), // A
+				new Port(-30, 30, Port.INPUT, 32), // B
+				new Port(-10, 40, Port.INPUT, 4), // Alu OP
+				new Port(10, 30, Port.INPUT, 5), // Shift Amount
+				new Port(30, 10, Port.OUTPUT, 32), // C
+				new Port(30, -10, Port.OUTPUT, 1) // Zero
+
+		};
+
+		ps[0].setToolTip(Strings.getter("A: input value"));
+		ps[1].setToolTip(Strings.getter("B: input value"));
+		ps[2].setToolTip(Strings.getter("Alu Operation code"));
 		ps[3].setToolTip(Strings.getter("Shift Amount"));
-		ps[4] = new Port(30, 10, Port.OUTPUT, 32); // C
-		ps[4].setToolTip(Strings.getter("C"));
-		ps[5] = new Port(30, -10, Port.OUTPUT, 1); // Zero
-		ps[5].setToolTip(Strings.getter("Zero - check if C's value is zero"));
+		ps[4].setToolTip(Strings.getter("C: output value"));
+		ps[5].setToolTip(Strings.getter("Zero - check if output value is zero"));
 		setPorts(ps);
-		/*
-		 * setPorts(new Port[] { new Port(-30, -30, Port.INPUT, 32), // Input 1 new
-		 * Port(-30, 30, Port.INPUT, 32), // Input 2 new Port(-10, 40, Port.INPUT, 4),
-		 * // Alu OP new Port(10, 30, Port.INPUT, 5), // SA ?? new Port(30, 0,
-		 * Port.OUTPUT, 32), // Output new Port(20, -10, Port.OUTPUT, 1), // Zero });
-		 */
+	}
+
+	// Adapted by lala
+	public static int computeAluOutput(int op, int input1, int input2, int shiftAmount) {
+		int ans = 0;
+		switch (op) {
+		case 0x0:
+		case 0x1:
+			ans = input2 << shiftAmount;
+			break;
+
+		case 0x2:
+		case 0x3:
+			ans = input1 + input2;
+			break;
+
+		case 0x4:
+			ans = input2 >>> shiftAmount; // logical
+			break;
+
+		case 0x5:
+			ans = input2 >> shiftAmount; // arithmetic
+			break;
+
+		case 0x6:
+		case 0x7:
+			ans = input1 - input2;
+			break;
+
+		case 0x8:
+			ans = input1 & input2;
+			break;
+
+		case 0xA:
+			ans = input1 | input2;
+			break;
+
+		case 0xC:
+			ans = input1 ^ input2;
+			break;
+
+		case 0xE:
+			ans = ~(input1 | input2);
+			break;
+
+		case 0x9:
+			ans = (input1 == input2) ? 0x1 : 0x0;
+			break;
+
+		case 0xB:
+			ans = (input1 != input2) ? 0x1 : 0x0;
+			break;
+
+		case 0xD:
+			ans = (input1 > 0) ? 0x1 : 0x0;
+			break;
+
+		case 0xF:
+			ans = (input1 <= 0) ? 0x1 : 0x0;
+			break;
+		}
+		return ans;
+	}
+
+	// Adapted by lala
+	public static int computeZeroValue(int output) {
+		return output == 0 ? 0x1 : 0x0;
 	}
 
 	@Override
@@ -49,64 +115,11 @@ public class ALU extends InstanceFactory {
 		int shift = state.getPortValue(3).toIntValue();
 		int ans = 0;
 		int zero = 0;
-		switch (op) {
-		case 0x0:
-		case 0x1:
-			ans = B << shift;
-			break;
 
-		case 0x2:
-		case 0x3:
-			ans = A + B;
-			break;
+		// Adapted by lala
+		ans = ALU.computeAluOutput(op, A, B, shift);
+		zero = computeZeroValue(ans);
 
-		case 0x4:
-			ans = B >>> shift; // logical
-			break;
-
-		case 0x5:
-			ans = B >> shift; // arithmetic
-			break;
-
-		case 0x6:
-		case 0x7:
-			ans = A - B;
-			break;
-
-		case 0x8:
-			ans = A & B;
-			break;
-
-		case 0xA:
-			ans = A | B;
-			break;
-
-		case 0xC:
-			ans = A ^ B;
-			break;
-
-		case 0xE:
-			ans = ~(A | B);
-			break;
-
-		case 0x9:
-			ans = (A == B) ? 0x1 : 0x0;
-			break;
-
-		case 0xB:
-			ans = (A != B) ? 0x1 : 0x0;
-			break;
-
-		case 0xD:
-			ans = (A > 0) ? 0x1 : 0x0;
-			break;
-
-		case 0xF:
-			ans = (A <= 0) ? 0x1 : 0x0;
-			break;
-		}
-
-		zero = (ans == 0) ? 0x1 : 0x0;
 		Value out = Value.createKnown(BitWidth.create(32), ans);
 		Value z = Value.createKnown(BitWidth.create(1), zero);
 		// Eh, delay of 32? Sure...
@@ -131,6 +144,7 @@ public class ALU extends InstanceFactory {
 		painter.drawPort(3, "SA", Direction.SOUTH);
 		painter.drawPort(4, "C", Direction.WEST);
 		painter.drawPort(5, "Z", Direction.WEST);
+
 		LalaFunctions.setTitle(painter, this);
 	}
 
