@@ -73,7 +73,7 @@ public class Execute extends InstanceFactory {
 		painter.drawPort(2, "Code", Direction.SOUTH);
 		painter.drawPort(3, "Output", Direction.WEST);
 		
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 	
 	/*

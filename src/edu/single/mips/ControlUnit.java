@@ -152,7 +152,7 @@ public class ControlUnit extends InstanceFactory {
 		painter.drawPort(8, "Aluop", Direction.WEST);
 
 		// Give it a Title!
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

@@ -21,6 +21,12 @@ import edu.single.funcoes.LalaFunctions;
 
 public class InstructionFetch extends InstanceFactory {
 
+	public static int OFFSETINDEX = 0;
+	public static int BRANCHINDEX = 1;
+	public static int RESETINDEX = 2;
+	public static int CLOCKINDEX = 3;
+	public static int ADDRESSINDEX = 4;
+	
 	private int address = 0;
 	private boolean oldClockState = false;
 	
@@ -29,38 +35,42 @@ public class InstructionFetch extends InstanceFactory {
 		
 		setAttributes(new Attribute[] { StdAttr.FACING }, new Object[] { Direction.WEST });
 		
-		Bounds bounds = Bounds.create(-50, -20, 100, 40);
+		Bounds bounds = Bounds.create(-50, -40, 100, 80);
 		int size[] = LalaFunctions.getDistanceFromMiddle(bounds);
 		
 		setOffsetBounds(bounds);
 		
 		Port ps[] = new Port[] {
-				new Port(-size[0], 0, Port.INPUT, 32), // offset
+				new Port(-size[0], -10, Port.INPUT, 32), // offset
+				new Port(-size[0], 10, Port.INPUT, 1), // branch
 				new Port(20, size[1], Port.INPUT, 1), // reset
 				new Port(-20, size[1], Port.INPUT, 1), // clock
 				new Port(size[0], 0, Port.OUTPUT, 32), // address
 		};
-		ps[0].setToolTip(Strings.getter("Offset to be added with default 4 jump"));
-		ps[1].setToolTip(Strings.getter("Reset if enabled"));
-		ps[2].setToolTip(Strings.getter("Clock input"));
-		ps[3].setToolTip(Strings.getter("Output address"));
+		ps[OFFSETINDEX].setToolTip(Strings.getter("Offset to be added with default 4 jump"));
+		ps[BRANCHINDEX].setToolTip(Strings.getter("If branch is set, use offset value to compute address"));
+		ps[RESETINDEX].setToolTip(Strings.getter("Reset if enabled"));
+		ps[CLOCKINDEX].setToolTip(Strings.getter("Clock input"));
+		ps[ADDRESSINDEX].setToolTip(Strings.getter("Output address"));
 		this.setPorts(ps);
 	}
 
 	public void propagate(InstanceState state) {
 		
-		int offset = state.getPortValue(0).toIntValue();
-		boolean reset = state.getPortValue(1).toIntValue() > 0;
-		boolean clockState = state.getPortValue(2).toIntValue() > 0;
-		
+		int offset = state.getPortValue(OFFSETINDEX).toIntValue();
+		boolean reset = state.getPortValue(RESETINDEX).toIntValue() > 0;
+		boolean clockState = state.getPortValue(CLOCKINDEX).toIntValue() > 0;
+		boolean branch = state.getPortValue(BRANCHINDEX).toIntValue() > 0;
 		
 		if(clockState != oldClockState) {
 			if(clockState) {
 				address += 4;
-				if(offset % 4 == 0) {
-					address += offset;
-				} else {
-					JOptionPane.showMessageDialog(null, "offset isn't a valid value: " + offset);
+				if(branch) {
+					if(offset % 4 == 0) {
+						address += offset;						
+					} else {
+						JOptionPane.showMessageDialog(null, "offset isn't a valid value: " + offset);						
+					}
 				}
 			}
 			oldClockState = clockState;
@@ -72,7 +82,7 @@ public class InstructionFetch extends InstanceFactory {
 		
 		Value Address = Value.createKnown(BitWidth.create(32), address);
 		
-		state.setPort(3, Address, 16);
+		state.setPort(ADDRESSINDEX, Address, 16);
 	}
 
 	public void paintInstance(InstancePainter painter) {
@@ -80,11 +90,12 @@ public class InstructionFetch extends InstanceFactory {
 		g.setColor(Color.black);
 		painter.drawBounds();
 		
-		painter.drawPort(0, "offset", Direction.EAST);
-		painter.drawPort(1, "reset", Direction.SOUTH);
-		painter.drawPort(2, "clock", Direction.SOUTH);
-		painter.drawPort(3, "address", Direction.WEST);
-		LalaFunctions.setTitle(painter, this);
+		painter.drawPort(OFFSETINDEX, "offset", Direction.EAST);
+		painter.drawPort(BRANCHINDEX, "branch", Direction.EAST);
+		painter.drawPort(RESETINDEX, "reset", Direction.SOUTH);
+		painter.drawPort(CLOCKINDEX, "clock", Direction.SOUTH);
+		painter.drawPort(ADDRESSINDEX, "address", Direction.WEST);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 	
 	@Override
