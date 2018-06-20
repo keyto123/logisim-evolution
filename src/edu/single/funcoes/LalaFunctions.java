@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.instance.InstanceFactory;
 import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.proj.Project;
@@ -21,6 +20,7 @@ import com.cburch.logisim.util.GraphicsUtil;
  */
 public class LalaFunctions {
 
+	// Created by lala
 	public static int getBits(int value, int start, int quantity) {
 		if(quantity > 32 || (quantity + start) > 32 || quantity < 0 || start > 31 || start < 0) {
 			throw new NumberFormatException("Value size is invalid");
@@ -29,12 +29,14 @@ public class LalaFunctions {
 		if(quantity == 32) {
 			return value;
 		}
+		
 		int end = (start + quantity) - 1;
 		value <<= (31 - end);
 		value >>>= ((31 - quantity) + 1);
 		return value;
 	}
 	
+	// Created by lala
 	public static List<String> getComponentValue(Project proj, String componentName, String label, int portIndex) {
 		List<String> result = new ArrayList<String>();
 
@@ -52,6 +54,7 @@ public class LalaFunctions {
 		return result;
 	}
 
+	// Created by lala
 	public static <T> void printArray(T[][] obj) {
 		StringBuilder bs = new StringBuilder();
 		for (T[] ob : obj) {
@@ -69,7 +72,7 @@ public class LalaFunctions {
 	}
 
 	// Created by lala
-	public static void setTitle(InstancePainter painter, InstanceFactory factory) {
+	public static void setTitle(InstancePainter painter, String title) {
 		// to maintain color
 		Graphics g = painter.getGraphics();
 		Color old = g.getColor();
@@ -79,11 +82,12 @@ public class LalaFunctions {
 		int width = bounds.getWidth();
 
 		g.setColor(Color.BLACK);
-		g.drawRect(x - 1, y - 20, width + 1, 19);
-		g.fillRect(x, y - 19, width + 1, 18);
+		GraphicsUtil.switchToWidth(g, 2);
+		g.drawRect(x, y - 20, width, 19);
+		g.fillRect(x - 1, y - 19, width + 2, 19);
 
-		g.setColor(Color.GRAY);
-		GraphicsUtil.drawCenteredText(g, factory.getName(), x + (width / 2), y - 10);
+		g.setColor(Color.WHITE);
+		GraphicsUtil.drawCenteredText(g, title, x + (width / 2), y - 10);
 
 		g.setColor(old);
 	}
