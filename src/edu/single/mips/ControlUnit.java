@@ -100,7 +100,7 @@ public class ControlUnit extends InstanceFactory {
 		memRead = 0;
 		memWrite = 0;
 		branch = 0;
-		aluOp = 0;
+		aluOp = -1;
 
 		aluCodeType = 0x0;
 		
@@ -108,7 +108,8 @@ public class ControlUnit extends InstanceFactory {
 		this.funct = LalaFunctions.getBits(instruction, 0, 6);
 		
 		this.SetControlUnitOutput(opcode);
-		aluOp = ControlUnit.computeAluOp(aluCodeType, funct);
+		if(aluOp == -1)
+			aluOp = ControlUnit.computeAluOp(aluCodeType, funct);
 
 		// "convert" the values to the used Value class
 		Value values[] = new Value[] {
@@ -174,7 +175,6 @@ public class ControlUnit extends InstanceFactory {
 			break;
 
 		case 0x2: // R
-		case 0x3:
 			switch (funct) {
 			case 0x0: // sll(shift left logical)
 				alu_op = 0x0;
@@ -220,32 +220,65 @@ public class ControlUnit extends InstanceFactory {
 				alu_op = 0xE;
 				break;
 			}
+		case 0x3:
+			switch(funct) {
+			case 0x08: // addi
+				alu_op = 0x2;
+				break;
+				
+			case 0x09: // addiu
+				alu_op = 0x3;
+				break;
+				
+			case 0x0A: // slti
+				alu_op = 0x0;
+				break;
+				
+			case 0x0B: // sltiu
+				alu_op = 0x0;
+				break;
+				
+			case 0x0C: // andi
+				alu_op = 0x8;
+				break;
+				
+			case 0x0D: // ori
+				alu_op = 0xA;
+				break;
+				
+			case 0x0F: // lui
+				alu_op = 0x2;
+				break;
+			}
 		}
 		return alu_op;
 	}
 	
 	private void SetControlUnitOutput(int opcode) {
 		switch (opcode) {
-		case 0x0: // R
+		case 0x00: // R
 			regDst = 1;
 			regWriter = 1;
 			aluCodeType = 0x2;
 			break;
 
 		// case 0x5: // bne
-		case 0x4: // beq
+		case 0x04: // beq
 			aluCodeType = 1;
-		case 0x2: // jump
+		case 0x02: // jump
 			branch = 1;
 			break;
 
-		case 0x8: // addi
-		case 0x9: // addiu
-			// case 0xC: // andi
-			// case 0xD: // ori
+		case 0x08: // addi
+		case 0x09: // addiu
+		case 0x0A: // slti
+		case 0x0B: // sltiu
+		case 0x0C: // andi
+		case 0x0D: // ori
+		case 0x0F: // lui
 			aluSrc = 1;
 			regWriter = 1;
-			// Aluop = 0x2; aluop 0 works for addi and addiu
+			aluOp = computeAluOp(3, opcode);
 			break;
 
 		case 0x23: // lw

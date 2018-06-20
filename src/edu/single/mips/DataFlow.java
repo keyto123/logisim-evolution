@@ -1,6 +1,7 @@
 package edu.single.mips;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -51,25 +52,127 @@ public class DataFlow {
 			this.columnModel.getColumn(i).setHeaderValue(i);
 		}
 	}
+	
+	private String getRegisterFrom(String s) {
+			if(!s.contains("$")) {
+				return null;					
+			}
+			int index = s.indexOf("$");
+			StringBuilder bs = new StringBuilder();
+			bs.append("$");
+			index++;
+			
+			char curChar = s.charAt(index);
+			do {
+				bs.append(curChar);
+				index++;
+				curChar = s.charAt(index);
+			} while(curChar >= '0' && curChar <= '9');
+			return bs.toString();
+	}
 
-	private String getInstructionElement(String code, int pos) {
+	private List<String> getInstructionRegisters(String code, String instructionType) {
+		List<String> registers = new ArrayList<String>();
+		
 		String instruction = new String(code);
-		instruction = instruction.replaceAll(",", "");
+		if(instruction.contains(","))
+			instruction = instruction.replaceAll(",", "");
 		String instructionSplit[] = instruction.split(" ");
-
-		return instructionSplit[pos];
+		
+		switch(instructionType) {
+		case "R":
+			for(int i = 1; i < instructionSplit.length; i++) {
+				registers.add(instructionSplit[i]);
+			}
+			break;
+		
+		case "I":
+			for(int i = 1; i < instructionSplit.length - 1; i++) {
+				registers.add(instructionSplit[i]);
+			}
+			registers.add(null);
+			break;
+			
+		case "LW":
+			registers.add(instructionSplit[1]);
+			registers.add(getRegisterFrom(instructionSplit[2]));
+			registers.add(null);
+			break;
+			
+		case "SW":
+			registers.add(null);
+			registers.add(instructionSplit[1]);
+			registers.add(getRegisterFrom(instructionSplit[2]));
+			break;
+			
+		case "J":
+			registers.add(null);
+			if(instructionSplit[1].contains("$")) {
+				registers.add(instructionSplit[1]);
+			} else {
+				registers.add(null);
+			}
+			registers.add(null);
+			break;
+		
+		case "B":
+			registers.add(null);
+			for(int i = 1; i < 3; i++) {
+				if(instructionSplit[i].contains("$")) {
+					registers.add(instructionSplit[i]);
+				} else {
+					registers.add(null);
+				}
+			}
+			break;
+		
+		default:
+			System.out.println("Failed to get instruction type match");
+			break;
+		}
+		return registers;
+	}
+	
+	private String getInstructionType(int instruction) {
+		int opcode = LalaFunctions.getBits(instruction, 26, 6);
+		switch(opcode) {
+		case 0:
+			return "R";
+		
+		case 0x23: // lw
+			return "LW";
+			
+		case 0x2B: // sw
+			return "SW";
+		
+		case 0x09: // addiu
+		case 0x0A: // slti
+		case 0x0B: // sltiu
+		case 0x0C: // andi
+		case 0x0D: // ori
+		case 0x0F: // lui
+			return "I";
+			
+		case 0x02: // j
+			return "J";
+		
+		case 0x04: // beq
+		case 0x05: // bne
+		case 0x06: // blez
+			return "B";
+			
+		default:
+			return null;
+		}
 	}
 
 	private boolean checkHazard(int level) {
 		int lastColumn = table.getColumnCount() - 1;
-		String currentCodeRegisters[] = new String[2];
 
 		// TODO: fix unhandled intructions and change getInstructionElement
 		String currentCode = table.getValueAt(0, lastColumn).toString();
-
-		for (int i = 0; i < 2; i++) {
-			currentCodeRegisters[i] = getInstructionElement(currentCode, i + 2);
-		}
+		int instruction = Integer.parseInt(LalaFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1).get(0));
+		List<String> regs = getInstructionRegisters(currentCode, getInstructionType(instruction));
 		
 		if(currentCode == null || currentCode.equals("bubble") || currentCode.equals(ProgramAssembler.disassemble(0, 0))) {
 			return false;
@@ -79,12 +182,13 @@ public class DataFlow {
 		case 0:
 			int length = lastColumn > 2 ? 2 : 1;
 			for (int i = 0; i < length; i++) {
-				
 				int testingColumn = lastColumn - (i + 1);
 				String testingCode = table.getValueAt(0, testingColumn).toString();
-				String reg = getInstructionElement(testingCode, 1);
+				String reg = getInstructionRegisters(testingCode, "R").get(0);
+				System.out.println("comp reg: " + reg);
+				System.out.println("reg1: " + regs.get(1) + " | reg2: " + regs.get(2));
 				
-				if (reg.equals(currentCodeRegisters[0]) || reg.equals(currentCodeRegisters[1])) {
+				if (reg.equals(regs.get(1)) || reg.equals(regs.get(2))) {
 					JOptionPane.showMessageDialog(proj.getFrame(), "hazard: " + currentCode + " & " + testingCode
 							+ " at [IF][" + lastColumn + "] & [IF][" + testingColumn + "]");
 				}

@@ -26,7 +26,6 @@ import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 
 import edu.cornell.cs3410.ProgramAssembler.Listing;
-import edu.single.funcoes.ProjectUtils;
 import edu.single.funcoes.LalaFunctions;
 
 /**
