@@ -275,7 +275,7 @@ public class Ram extends Mem {
 			painter.drawPort(DIN, Strings.get("ramDataLabel"), Direction.EAST);
 		}
 		
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

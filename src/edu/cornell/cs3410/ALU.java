@@ -145,7 +145,7 @@ public class ALU extends InstanceFactory {
 		painter.drawPort(4, "C", Direction.WEST);
 		painter.drawPort(5, "Z", Direction.WEST);
 
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

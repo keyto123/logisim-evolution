@@ -174,7 +174,7 @@ class RegisterFile32 extends InstanceFactory {
 					bounds.getY() + boxY(i) + (BOX_HEIGHT - 1) / 2, GraphicsUtil.H_CENTER, GraphicsUtil.V_CENTER);
 		}
 		
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 }

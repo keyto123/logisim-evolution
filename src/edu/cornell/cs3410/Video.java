@@ -98,7 +98,7 @@ class Video extends InstanceFactory {
 		drawVideo(painter, painter.getLocation().getX(), painter.getLocation().getY(), d,
 				painter.getAttributeValue(BLINK_OPTION), painter.getAttributeValue(RESET_OPTION));
 		
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

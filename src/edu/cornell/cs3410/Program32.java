@@ -123,7 +123,7 @@ public class Program32 extends InstanceFactory {
 			drawState(painter);
 		}
 		
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

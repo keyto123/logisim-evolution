@@ -444,7 +444,7 @@ public class RamIO extends Mem {
 		painter.drawPort(KREAD, "KR", Direction.WEST);
 		painter.drawPort(IRQ_OUT, "IRQ_OUT", Direction.SOUTH);
 		
-		LalaFunctions.setTitle(painter, this);
+		LalaFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override
