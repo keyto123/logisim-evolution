@@ -136,7 +136,7 @@ public class DataFlow {
 	private String getInstructionType(int instruction) {
 		int opcode = LalaFunctions.getBits(instruction, 26, 6);
 		switch(opcode) {
-		case 0:
+		case 0x00:
 			return "R";
 		
 		case 0x23: // lw

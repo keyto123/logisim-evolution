@@ -84,7 +84,7 @@ public class LalaFunctions {
 		g.setColor(Color.BLACK);
 		GraphicsUtil.switchToWidth(g, 2);
 		g.drawRect(x, y - 20, width, 19);
-		g.fillRect(x - 1, y - 19, width + 2, 19);
+		g.fillRect(x, y - 19, width, 19);
 
 		g.setColor(Color.WHITE);
 		GraphicsUtil.drawCenteredText(g, title, x + (width / 2), y - 10);

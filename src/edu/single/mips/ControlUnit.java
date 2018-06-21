@@ -220,6 +220,7 @@ public class ControlUnit extends InstanceFactory {
 				alu_op = 0xE;
 				break;
 			}
+		
 		case 0x3:
 			switch(funct) {
 			case 0x08: // addi
