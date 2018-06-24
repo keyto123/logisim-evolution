@@ -1,3 +1,6 @@
+# LSD's Version of logisim-evolution
+Using a base adapted by cornell, the main goal of this version of logisim-evolution is to add support for pipeline simulation with hazard controls.
+
 # CS 3410 students who want a ready-made jar file should download it from our [course page](http://www.cs.cornell.edu/courses/cs3410/).
 
 logisim-evolution
