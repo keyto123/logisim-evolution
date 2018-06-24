@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 import edu.single.mips.DataFlow_Frame;
 
-public class MenuLala extends Menu {
+public class MenuLsd extends Menu {
 
 	/**
 	 * 
@@ -21,10 +21,10 @@ public class MenuLala extends Menu {
 
 	private DataFlow_Frame dataFlowFrame;
 
-	public MenuLala(LogisimMenuBar menubar) {
+	public MenuLsd(LogisimMenuBar menubar) {
 		this.menubar = menubar;
 
-		this.testing.addActionListener(a -> testing_buttonFunction());
+		this.testing.addActionListener(a -> pipelined_buttonFunction());
 		this.updateTest.addActionListener(a -> updateTest_buttonFunction());
 
 		this.add(testing);
@@ -38,13 +38,13 @@ public class MenuLala extends Menu {
 			JOptionPane.showMessageDialog(this, "Uso incorreto, abra a tabela primeiro.");
 	}
 
-	private void testing_buttonFunction() {
+	private void pipelined_buttonFunction() {
 		if (dataFlowFrame != null) {
 			JOptionPane.showMessageDialog(this,
 					"Please close the last opened dataflow frame before creating a new one.");
 			return;
 		}
-		dataFlowFrame = new DataFlow_Frame(menubar.getProject());
+		dataFlowFrame = new DataFlow_Frame(menubar.getProject(), 0);
 		dataFlowFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {

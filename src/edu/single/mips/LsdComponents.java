@@ -7,27 +7,36 @@ import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
 
-public class LalaComp extends Library {
+import edu.single.mips.barriers.EXBarrier;
+import edu.single.mips.barriers.IDBarrier;
+import edu.single.mips.barriers.IFBarrier;
+import edu.single.mips.barriers.MEMBarrier;
+
+public class LsdComponents extends Library {
 	private List<Tool> tools;
 
-	public LalaComp() {
+	public LsdComponents() {
 		tools = Arrays.asList(new Tool[] {
-			new AddTool(new LalaTeste()),	
+			new AddTool(new Teste()),	
 			new AddTool(new ControlUnit()),
 			new AddTool(new InstructionFetch()),
 			new AddTool(new Execute()),
-			new AddTool(new ClkRegister()),
+			new AddTool(new IFBarrier()),
+			new AddTool(new IDBarrier()),
+			new AddTool(new EXBarrier()),
+			new AddTool(new MEMBarrier()),
+			new AddTool(new InstructionSplitter()),
 		});
 	}
 
 	@Override
 	public String getName() {
-		return "lala-experiments";
+		return "LSD-MIPS";
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "Lala Experiments";
+		return "LSD MIPS";
 	}
 
 	@Override

@@ -57,6 +57,9 @@ import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.Icons;
 
+import edu.single.funcoes.ProjectUtils;
+import edu.single.mips.DataFlow_Frame;
+
 public class Clock extends InstanceFactory {
 	public static class ClockLogger extends InstanceLogger {
 		@Override
@@ -145,12 +148,11 @@ public class Clock extends InstanceFactory {
 		}
 	}
 
-	public static final Attribute<Integer> ATTR_HIGH = new DurationAttribute(
-			"highDuration", Strings.getter("clockHighAttr"), 1,
-			Integer.MAX_VALUE);
+	public static final Attribute<Integer> ATTR_HIGH = new DurationAttribute("highDuration",
+			Strings.getter("clockHighAttr"), 1, Integer.MAX_VALUE);
 
-	public static final Attribute<Integer> ATTR_LOW = new DurationAttribute(
-			"lowDuration", Strings.getter("clockLowAttr"), 1, Integer.MAX_VALUE);
+	public static final Attribute<Integer> ATTR_LOW = new DurationAttribute("lowDuration",
+			Strings.getter("clockLowAttr"), 1, Integer.MAX_VALUE);
 
 	public static final Clock FACTORY = new Clock();
 
@@ -159,10 +161,9 @@ public class Clock extends InstanceFactory {
 	public Clock() {
 		super("Clock", Strings.getter("clockComponent"));
 		setAttributes(
-				new Attribute[] { StdAttr.FACING, ATTR_HIGH, ATTR_LOW,
-						StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT },
-				new Object[] { Direction.EAST, Integer.valueOf(1),
-						Integer.valueOf(1), "", Direction.WEST,
+				new Attribute[] { StdAttr.FACING, ATTR_HIGH, ATTR_LOW, StdAttr.LABEL, Pin.ATTR_LABEL_LOC,
+						StdAttr.LABEL_FONT },
+				new Object[] { Direction.EAST, Integer.valueOf(1), Integer.valueOf(1), "", Direction.WEST,
 						StdAttr.DEFAULT_LABEL_FONT });
 		setFacingAttribute(StdAttr.FACING);
 		setInstanceLogger(ClockLogger.class);
@@ -195,13 +196,11 @@ public class Clock extends InstanceFactory {
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
-		return Probe.getOffsetBounds(attrs.getValue(StdAttr.FACING),
-				BitWidth.ONE, RadixOption.RADIX_2);
+		return Probe.getOffsetBounds(attrs.getValue(StdAttr.FACING), BitWidth.ONE, RadixOption.RADIX_2);
 	}
 
 	@Override
-	public boolean HDLSupportedComponent(String HDLIdentifier,
-			AttributeSet attrs) {
+	public boolean HDLSupportedComponent(String HDLIdentifier, AttributeSet attrs) {
 		if (MyHDLGenerator == null) {
 			MyHDLGenerator = new ClockHDLGeneratorFactory();
 		}
@@ -229,8 +228,7 @@ public class Clock extends InstanceFactory {
 		} else {
 			g.drawRect(4, 4, 13, 13);
 			g.setColor(Value.FALSE.getColor());
-			g.drawPolyline(new int[] { 6, 6, 10, 10, 14, 14 }, new int[] { 10,
-					6, 6, 14, 14, 10 }, 6);
+			g.drawPolyline(new int[] { 6, 6, 10, 10, 14, 14 }, new int[] { 10, 6, 6, 14, 14, 10 }, 6);
 		}
 
 		Direction dir = painter.getAttributeValue(StdAttr.FACING);
@@ -294,6 +292,14 @@ public class Clock extends InstanceFactory {
 		ClockState q = getState(state);
 		if (!val.equals(q.sending)) { // ignore if no change
 			state.setPort(0, q.sending, 1);
+
+			// Added by lsd for support to data flow table
+			if (val.toIntValue() == 1) {
+				DataFlow_Frame f = ProjectUtils.getDataFlowFrame(state.getProject());
+				if (f != null) {
+					f.getFlow().updateTable();
+				}
+			}
 		}
 	}
 }

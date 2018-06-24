@@ -31,7 +31,7 @@ import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.proj.Project;
 import com.cburch.logisim.util.GraphicsUtil;
 
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 public class Ram extends Mem {
 
@@ -275,7 +275,7 @@ public class Ram extends Mem {
 			painter.drawPort(DIN, Strings.get("ramDataLabel"), Direction.EAST);
 		}
 		
-		LalaFunctions.setTitle(painter, this.getName());
+		LsdFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

@@ -48,7 +48,7 @@ import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
 
 import edu.cornell.cs3410.Components;
-import edu.single.mips.LalaComp;
+import edu.single.mips.LsdComponents;
 
 public class Builtin extends Library {
 	private List<Library> libraries = null;
@@ -57,7 +57,7 @@ public class Builtin extends Library {
 		libraries = Arrays.asList(new Library[] { new Base(), new Gates(),
 				new Wiring(), new Plexers(), new Arithmetic(), new Memory(),
 				new Io(),  new Hdl(), new Tcl(), new BFHPraktika(), new Components(),
-				new LalaComp(),});
+				new LsdComponents(),});
 	}
 
 	@Override

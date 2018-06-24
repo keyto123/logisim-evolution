@@ -15,27 +15,30 @@ import com.cburch.logisim.util.GraphicsUtil;
 
 /**
  * 
- * @author lala
+ * @author lsd
  *
  */
-public class LalaFunctions {
+public final class LsdFunctions {
+
+	private LsdFunctions() {
+	}
 
 	// Created by lala
 	public static int getBits(int value, int start, int quantity) {
-		if(quantity > 32 || (quantity + start) > 32 || quantity < 0 || start > 31 || start < 0) {
+		if (quantity > 32 || (quantity + start) > 32 || quantity < 0 || start > 31 || start < 0) {
 			throw new NumberFormatException("Value size is invalid");
 		}
-		
-		if(quantity == 32) {
+
+		if (quantity == 32) {
 			return value;
 		}
-		
+
 		int end = (start + quantity) - 1;
 		value <<= (31 - end);
 		value >>>= ((31 - quantity) + 1);
 		return value;
 	}
-	
+
 	// Created by lala
 	public static List<String> getComponentValue(Project proj, String componentName, String label, int portIndex) {
 		List<String> result = new ArrayList<String>();
@@ -54,7 +57,27 @@ public class LalaFunctions {
 		return result;
 	}
 
-	// Created by lala
+	// Created by lsd
+	public static <T> void printAnything(T obj) {
+		if (obj instanceof Iterable) {
+			Iterable<T> itrb = (Iterable<T>) obj;
+			for (T o : itrb) {
+				printAnything(o);
+				System.out.println();
+			}
+		} else if (obj instanceof Object[]) {
+			Object[] itrb = (Object[]) obj;
+			for (Object o : itrb) {
+				printAnything(o);
+				System.out.println();
+			}
+		} else {
+			System.out.print(obj + " ");
+			return;
+		}
+	}
+
+	// Created by lsd
 	public static <T> void printArray(T[][] obj) {
 		StringBuilder bs = new StringBuilder();
 		for (T[] ob : obj) {
@@ -71,7 +94,7 @@ public class LalaFunctions {
 		return new int[] { bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() };
 	}
 
-	// Created by lala
+	// Created by lsd
 	public static void setTitle(InstancePainter painter, String title) {
 		// to maintain color
 		Graphics g = painter.getGraphics();

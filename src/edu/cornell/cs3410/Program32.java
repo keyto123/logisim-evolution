@@ -26,7 +26,7 @@ import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 
 import edu.cornell.cs3410.ProgramAssembler.Listing;
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 /**
  * Represents a program ROM.
@@ -122,7 +122,7 @@ public class Program32 extends InstanceFactory {
 			drawState(painter);
 		}
 		
-		LalaFunctions.setTitle(painter, this.getName());
+		LsdFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

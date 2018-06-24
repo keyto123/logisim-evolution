@@ -40,7 +40,7 @@ import com.cburch.logisim.instance.StdAttr;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 /**
  * Represents a N-bit M-way dual port register file. Draws heavily from
@@ -174,7 +174,7 @@ class RegisterFile32 extends InstanceFactory {
 					bounds.getY() + boxY(i) + (BOX_HEIGHT - 1) / 2, GraphicsUtil.H_CENTER, GraphicsUtil.V_CENTER);
 		}
 		
-		LalaFunctions.setTitle(painter, this.getName());
+		LsdFunctions.setTitle(painter, this.getName());
 	}
 
 }

@@ -1,0 +1,14 @@
+Desenvolver estagio ID
+Desenvolver estagio EX
+Desenvolver estagio MEM
+Desenvolver estagio WB
+Desenvolver Unidade de Hazards
+Desenvolver Barreiras temporais(IF/ID, ID/EX, EX/MEM, MEM/WB)
+Adicionar suporte a todas as instruções
+Adicionar documentação das classes e instruções
+Adicionar tratamentos de Exceções
+Escrever Manual de uso
+
+Corrigir colorações na tabela de fluxo de dados
+Corrigir classe DataFlow(refazer com uso da Unidade de Hazard)
+Alterar Clock convencional para suporte ao fluxo de dados // feito

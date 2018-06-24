@@ -13,14 +13,14 @@ import com.cburch.logisim.instance.InstanceState;
 import com.cburch.logisim.instance.Port;
 import com.cburch.logisim.util.GraphicsUtil;
 
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 public class ALU extends InstanceFactory {
 	public ALU() {
 		super("Mips ALU");
 		setOffsetBounds(Bounds.create(-30, -50, 60, 100));
 
-		// Adapted by lala
+		// Adapted by lsd
 		Port ps[] = new Port[] { 
 				new Port(-30, -30, Port.INPUT, 32), // A
 				new Port(-30, 30, Port.INPUT, 32), // B
@@ -37,10 +37,11 @@ public class ALU extends InstanceFactory {
 		ps[3].setToolTip(Strings.getter("Shift Amount"));
 		ps[4].setToolTip(Strings.getter("C: output value"));
 		ps[5].setToolTip(Strings.getter("Zero - check if output value is zero"));
+		
 		setPorts(ps);
 	}
 
-	// Adapted by lala
+	// Adapted by lsd
 	public static int computeAluOutput(int op, int input1, int input2, int shiftAmount) {
 		int ans = 0;
 		switch (op) {
@@ -102,7 +103,7 @@ public class ALU extends InstanceFactory {
 		return ans;
 	}
 
-	// Adapted by lala
+	// Adapted by lsd
 	public static int computeZeroValue(int output) {
 		return output == 0 ? 0x1 : 0x0;
 	}
@@ -116,7 +117,7 @@ public class ALU extends InstanceFactory {
 		int ans = 0;
 		int zero = 0;
 
-		// Adapted by lala
+		// Adapted by lsd
 		ans = ALU.computeAluOutput(op, A, B, shift);
 		zero = computeZeroValue(ans);
 
@@ -145,7 +146,7 @@ public class ALU extends InstanceFactory {
 		painter.drawPort(4, "C", Direction.WEST);
 		painter.drawPort(5, "Z", Direction.WEST);
 
-		LalaFunctions.setTitle(painter, this.getName());
+		LsdFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

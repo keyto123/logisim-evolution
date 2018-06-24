@@ -15,7 +15,7 @@ import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.instance.InstanceState;
 import com.cburch.logisim.instance.Port;
 
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 // 128 x 128 pixel LCD display with 8bpp color (byte addressed)
 class Video extends InstanceFactory {
@@ -98,7 +98,7 @@ class Video extends InstanceFactory {
 		drawVideo(painter, painter.getLocation().getX(), painter.getLocation().getY(), d,
 				painter.getAttributeValue(BLINK_OPTION), painter.getAttributeValue(RESET_OPTION));
 		
-		LalaFunctions.setTitle(painter, this.getName());
+		LsdFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

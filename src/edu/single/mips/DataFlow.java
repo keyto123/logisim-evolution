@@ -1,36 +1,70 @@
 package edu.single.mips;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import com.cburch.logisim.proj.Project;
 
 import edu.cornell.cs3410.ProgramAssembler;
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 public class DataFlow {
 
+	private static final String rowProperty = "hazardRow";
+	private static final String colProperty = "hazardCol";
+	private static final String colProperty2 = "hazardCol2";
+	
+	private class customRenderer extends DefaultTableCellRenderer {
+		@Override
+		public JComponent getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			Integer hazardRow = (Integer)table.getClientProperty(rowProperty);
+			Integer hazardCol = (Integer)table.getClientProperty(colProperty);
+			Integer hazardCol2 = (Integer)table.getClientProperty(colProperty2);
+			
+			if(hazardRow != null && hazardCol != null && hazardCol2 != null) {
+				if(row == hazardRow && (column == hazardCol || column == hazardCol2)) {
+					setBackground(Color.RED);
+				} else {
+					setBackground(null);
+				}
+			} else {
+				setBackground(null);
+			}
+			
+			return (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		}
+	}
+	
 	private Project proj;
-
-	public RegisterManip regMan = new RegisterManip();
 
 	private JTable table;
 	private DefaultTableModel tableModel;
 	private TableColumnModel columnModel;
 	private static final String[] stages = { " IF", " ID", " EX", "MEM", " WB" };
+	private int hazardLevel;
+	
+	private List<Integer> instructions = new ArrayList<>();
 
-	public DataFlow(Project proj) {
+	public DataFlow(Project proj, int hazardLevel) {
 		this.proj = proj;
+		this.hazardLevel = hazardLevel;
 		this.createTable();
 
 		this.tableModel.addColumn(1);
 		this.tableModel.setValueAt(getCurrentCode(), 0, 1);
+		List<String> x = LsdFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1);
+		if(x.size() > 0)
+			instructions.add(Integer.parseInt(x.get(0)));
 		this.adjustTable();
 	}
 
@@ -134,7 +168,7 @@ public class DataFlow {
 	}
 	
 	private String getInstructionType(int instruction) {
-		int opcode = LalaFunctions.getBits(instruction, 26, 6);
+		int opcode = LsdFunctions.getBits(instruction, 26, 6);
 		switch(opcode) {
 		case 0x00:
 			return "R";
@@ -171,9 +205,12 @@ public class DataFlow {
 
 		// TODO: fix unhandled intructions and change getInstructionElement
 		String currentCode = table.getValueAt(0, lastColumn).toString();
-		int instruction = Integer.parseInt(LalaFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1).get(0));
-		List<String> regs = getInstructionRegisters(currentCode, getInstructionType(instruction));
 		
+		// Getting and storing current instruction
+		int instruction = Integer.parseInt(LsdFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1).get(0));
+		instructions.add(instruction);
+		
+		List<String> regs = getInstructionRegisters(currentCode, getInstructionType(instruction));
 		if(currentCode == null || currentCode.equals("bubble") || currentCode.equals(ProgramAssembler.disassemble(0, 0))) {
 			return false;
 		}
@@ -182,13 +219,32 @@ public class DataFlow {
 		case 0:
 			int length = lastColumn > 2 ? 2 : 1;
 			for (int i = 0; i < length; i++) {
+				
+				// Useful informations for hazard checking
 				int testingColumn = lastColumn - (i + 1);
 				String testingCode = table.getValueAt(0, testingColumn).toString();
-				String reg = getInstructionRegisters(testingCode, "R").get(0);
-				System.out.println("comp reg: " + reg);
-				System.out.println("reg1: " + regs.get(1) + " | reg2: " + regs.get(2));
+				String instructionType = getInstructionType(instructions.get(testingColumn - 1));
 				
-				if (reg.equals(regs.get(1)) || reg.equals(regs.get(2))) {
+				String reg = getInstructionRegisters(testingCode, instructionType).get(0);
+				if(reg == null) {
+					return false;
+				}
+				if (reg.equals(regs.get(1)) || (regs.get(2) != null && reg.equals(regs.get(2)))) {
+					
+					// Used for painting hazard cells
+					table.putClientProperty(rowProperty, 0);
+					table.putClientProperty(colProperty, lastColumn);
+					table.putClientProperty(colProperty2, testingColumn);
+					
+					// Gettings cells
+					Rectangle cell = table.getCellRect(0, lastColumn, false);
+					Rectangle cell2 = table.getCellRect(0, testingColumn, false);
+					
+					// Repainting cells
+					table.repaint(cell);
+					table.repaint(cell2);
+					
+					// TEST: Test message
 					JOptionPane.showMessageDialog(proj.getFrame(), "hazard: " + currentCode + " & " + testingCode
 							+ " at [IF][" + lastColumn + "] & [IF][" + testingColumn + "]");
 				}
@@ -201,7 +257,7 @@ public class DataFlow {
 	private String getCurrentCode() {
 		String value = null, currentCode = null;
 
-		List<String> valueList = LalaFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1);
+		List<String> valueList = LsdFunctions.getComponentValue(proj, "MIPSProgramROM", null, 1);
 		if (valueList.isEmpty()) {
 			return null;
 		}
@@ -245,7 +301,8 @@ public class DataFlow {
 
 		this.table.setSize(5, columns + 1);
 		this.tableModel.addColumn(columns + 1);
-
+		this.table.setDefaultRenderer(table.getColumnClass(columns), new customRenderer());
+		
 		if (columns > 0) {
 			int i = 0;
 			this.tableModel.setValueAt(this.getCurrentCode(), i, columns);

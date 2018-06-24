@@ -34,7 +34,7 @@ import com.cburch.logisim.proj.Project;
 import com.cburch.logisim.util.GraphicsUtil;
 import com.cburch.logisim.util.StringUtil;
 
-import edu.single.funcoes.LalaFunctions;
+import edu.single.funcoes.LsdFunctions;
 
 public class RamIO extends Mem {
 
@@ -444,7 +444,7 @@ public class RamIO extends Mem {
 		painter.drawPort(KREAD, "KR", Direction.WEST);
 		painter.drawPort(IRQ_OUT, "IRQ_OUT", Direction.SOUTH);
 		
-		LalaFunctions.setTitle(painter, this.getName());
+		LsdFunctions.setTitle(painter, this.getName());
 	}
 
 	@Override

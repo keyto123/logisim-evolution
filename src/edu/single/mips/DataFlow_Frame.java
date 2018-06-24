@@ -16,7 +16,7 @@ public class DataFlow_Frame extends LFrame {
 	private DataFlow flow;
 	//private Project proj;
 
-	public DataFlow_Frame(Project proj) {
+	public DataFlow_Frame(Project proj, int state) {
 		//this.proj = proj;
 		this.setTitle("Base frame for Register table");
 		this.setAlwaysOnTop(true);
@@ -24,7 +24,7 @@ public class DataFlow_Frame extends LFrame {
 		this.setResizable(true);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-		flow = new DataFlow(proj);
+		flow = new DataFlow(proj, state);
 		JScrollPane x = new JScrollPane(flow.getTable());
 		x.setIgnoreRepaint(true);
 		x.setAutoscrolls(true);
