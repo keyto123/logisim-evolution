@@ -26,6 +26,7 @@ public class LsdComponents extends Library {
 			new AddTool(new EXBarrier()),
 			new AddTool(new MEMBarrier()),
 			new AddTool(new InstructionSplitter()),
+			new AddTool(new HazardUnit()),
 		});
 	}
 

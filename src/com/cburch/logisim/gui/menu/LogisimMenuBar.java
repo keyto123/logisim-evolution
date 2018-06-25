@@ -58,7 +58,7 @@ public class LogisimMenuBar extends JMenuBar {
 			fpga.localeChanged();
 			simulate.localeChanged();
 			help.localeChanged();
-			lala.localeChanged();
+			lsd.localeChanged();
 		}
 	}
 
@@ -138,10 +138,10 @@ public class LogisimMenuBar extends JMenuBar {
 	private MenuSimulate simulate;
 	private MenuHelp help;
 	private MenuFPGA fpga;
-	private MenuLsd lala;
+	private MenuLsd lsd;
 	
-	public MenuLsd getMenuLala() {
-		return lala;
+	public MenuLsd getMenuLsd() {
+		return lsd;
 	}
 
 	public LogisimMenuBar(JFrame parent, Project proj) {
@@ -157,7 +157,7 @@ public class LogisimMenuBar extends JMenuBar {
 		add(new WindowMenu(parent));
 		add(help = new MenuHelp(this));
 		
-		add(lala = new MenuLsd(this));
+		add(lsd = new MenuLsd(this));
 
 		LocaleManager.addLocaleListener(listener);
 		listener.localeChanged();

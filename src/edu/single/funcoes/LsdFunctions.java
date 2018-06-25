@@ -23,7 +23,7 @@ public final class LsdFunctions {
 	private LsdFunctions() {
 	}
 
-	// Created by lala
+	// Created by lsd
 	public static int getBits(int value, int start, int quantity) {
 		if (quantity > 32 || (quantity + start) > 32 || quantity < 0 || start > 31 || start < 0) {
 			throw new NumberFormatException("Value size is invalid");
@@ -39,7 +39,7 @@ public final class LsdFunctions {
 		return value;
 	}
 
-	// Created by lala
+	// Created by lsd
 	public static List<String> getComponentValue(Project proj, String componentName, String label, int portIndex) {
 		List<String> result = new ArrayList<String>();
 
@@ -58,26 +58,6 @@ public final class LsdFunctions {
 	}
 
 	// Created by lsd
-	public static <T> void printAnything(T obj) {
-		if (obj instanceof Iterable) {
-			Iterable<T> itrb = (Iterable<T>) obj;
-			for (T o : itrb) {
-				printAnything(o);
-				System.out.println();
-			}
-		} else if (obj instanceof Object[]) {
-			Object[] itrb = (Object[]) obj;
-			for (Object o : itrb) {
-				printAnything(o);
-				System.out.println();
-			}
-		} else {
-			System.out.print(obj + " ");
-			return;
-		}
-	}
-
-	// Created by lsd
 	public static <T> void printArray(T[][] obj) {
 		StringBuilder bs = new StringBuilder();
 		for (T[] ob : obj) {
@@ -93,24 +73,34 @@ public final class LsdFunctions {
 	public static int[] getDistanceFromMiddle(Bounds bounds) {
 		return new int[] { bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() };
 	}
-
+	
 	// Created by lsd
 	public static void setTitle(InstancePainter painter, String title) {
+		setTitle(painter, title, true);
+	}
+
+	// Created by lsd
+	public static void setTitle(InstancePainter painter, String title, boolean up) {
 		// to maintain color
 		Graphics g = painter.getGraphics();
 		Color old = g.getColor();
 		Bounds bounds = painter.getBounds();
 
-		int x = bounds.getX(), y = bounds.getY();
+		int x = bounds.getX(), y = 0, offset = 8;
 		int width = bounds.getWidth();
-
+		
+		if(up) {
+			y = bounds.getY() - 20;
+		} else {
+			y = bounds.getY() + bounds.getHeight();
+		}
 		g.setColor(Color.BLACK);
 		GraphicsUtil.switchToWidth(g, 2);
-		g.drawRect(x, y - 20, width, 19);
-		g.fillRect(x, y - 19, width, 19);
-
+		g.drawRect(x, y, width, 20);
+		g.fillRect(x, y, width, 20);
+		
 		g.setColor(Color.WHITE);
-		GraphicsUtil.drawCenteredText(g, title, x + (width / 2), y - 10);
+		GraphicsUtil.drawCenteredText(g, title, x + (width / 2), y + offset);
 
 		g.setColor(old);
 	}

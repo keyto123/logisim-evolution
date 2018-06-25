@@ -34,7 +34,7 @@ public final class ProjectUtils {
 	}
 
 	public static DataFlow_Frame getDataFlowFrame(Project proj) {
-		return getMenuBar(proj).getMenuLala().getDataFlowFrame();
+		return getMenuBar(proj).getMenuLsd().getDataFlowFrame();
 	}
 
 	public static DataFlow getDataFlow(Project proj) {

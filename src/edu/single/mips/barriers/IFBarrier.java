@@ -1,13 +1,10 @@
 package edu.single.mips.barriers;
 
-import java.util.List;
-
 import com.cburch.logisim.data.Bounds;
 import com.cburch.logisim.data.Direction;
 import com.cburch.logisim.instance.InstancePainter;
 import com.cburch.logisim.instance.InstanceState;
 import com.cburch.logisim.instance.Port;
-import com.cburch.logisim.tools.Strings;
 
 import edu.single.funcoes.LsdFunctions;
 
