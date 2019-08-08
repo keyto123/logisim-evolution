@@ -1,14 +1,14 @@
-Desenvolver estagio ID
-Desenvolver estagio EX
-Desenvolver estagio MEM
-Desenvolver estagio WB
-Desenvolver Unidade de Hazards
-Desenvolver Barreiras temporais(IF/ID, ID/EX, EX/MEM, MEM/WB)
-Adicionar suporte a todas as instruções
-Adicionar documentação das classes e instruções
-Adicionar tratamentos de Exceções
-Escrever Manual de uso
+Desenvolver estagio ID // 0%
+Desenvolver estagio EX // baixa probabilidade de ser feito
+Desenvolver estagio MEM // baixa probabilidade de ser feito
+Desenvolver estagio WB // baixa probabilidade de ser feito
+Desenvolver Unidade de Hazards // apenas construída
+Desenvolver Barreiras temporais(IF/ID, ID/EX, EX/MEM, MEM/WB) // feito - probabilidade alta de alteracao
+Adicionar suporte a todas as instrucoes // boa parte feita
+Adicionar documentacao das classes e instrucoes // 0%
+Adicionar tratamentos de Excecoes // pouco feito
+Escrever Manual de uso // 0%
 
-Corrigir colorações na tabela de fluxo de dados
-Corrigir classe DataFlow(refazer com uso da Unidade de Hazard)
+Corrigir colorações na tabela de fluxo de dados // alguns erros persistem
+Corrigir classe DataFlow(refazer com uso da Unidade de Hazard) // 0%
 Alterar Clock convencional para suporte ao fluxo de dados // feito

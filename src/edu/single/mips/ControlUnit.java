@@ -53,7 +53,11 @@ public class ControlUnit extends InstanceFactory {
 		super("Control Unit");
 
 		// 95% useless (5% = no (other)bugs with attributes
-		setAttributes(new Attribute[] { StdAttr.FACING }, new Object[] { Direction.WEST });
+		setAttributes(new Attribute[] {
+				StdAttr.FACING
+		}, new Object[] {
+				Direction.WEST
+		});
 
 		Bounds bounds = Bounds.create(-60, -100, 120, 180);
 
@@ -62,7 +66,7 @@ public class ControlUnit extends InstanceFactory {
 		int size[] = LsdFunctions.getDistanceFromMiddle(bounds);
 
 		// Configure each port
-		Port ps[] = new Port[] { 
+		Port ps[] = new Port[] {
 				new Port(-size[0], -20, Port.INPUT, 6), // Opcode
 				new Port(-size[0], 0, Port.INPUT, 6), // Funct
 				new Port(size[0], -70, Port.OUTPUT, 1), // RegWriter
@@ -213,9 +217,11 @@ public class ControlUnit extends InstanceFactory {
 	}
 
 	private void SetControlUnitOutput(int opcode) {
+		
 		if (opcode >= 0x08 && opcode <= 0x0F) {
 			SetControlUnitOutput(IMMEDIATE);
 		}
+		
 		switch (opcode) {
 		case 0x00: // R
 			regDst = 1;
@@ -223,8 +229,8 @@ public class ControlUnit extends InstanceFactory {
 			aluCodeType = 0x2;
 			break;
 
-		case 0x5: // bne
 		case 0x04: // beq
+		case 0x05: // bne
 			aluCodeType = 1;
 		case 0x02: // jump
 			branch = 1;
@@ -235,13 +241,10 @@ public class ControlUnit extends InstanceFactory {
 			break;
 
 		case 0x09: // addiu
-			aluOp = 0x3;
+			aluOp = 0x03;
 			break;
 
 		case 0x0A: // slti
-			aluOp = 0x02;
-			break;
-
 		case 0x0B: // sltiu
 			aluOp = 0x02;
 			break;

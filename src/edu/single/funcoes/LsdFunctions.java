@@ -23,7 +23,7 @@ public final class LsdFunctions {
 	private LsdFunctions() {
 	}
 
-	// Created by lala
+	// Created by lsd
 	public static int getBits(int value, int start, int quantity) {
 		if (quantity > 32 || (quantity + start) > 32 || quantity < 0 || start > 31 || start < 0) {
 			throw new NumberFormatException("Value size is invalid");
@@ -39,7 +39,7 @@ public final class LsdFunctions {
 		return value;
 	}
 
-	// Created by lala
+	// Created by lsd
 	public static List<String> getComponentValue(Project proj, String componentName, String label, int portIndex) {
 		List<String> result = new ArrayList<String>();
 
@@ -55,26 +55,6 @@ public final class LsdFunctions {
 		}
 
 		return result;
-	}
-
-	// Created by lsd
-	public static <T> void printAnything(T obj) {
-		if (obj instanceof Iterable) {
-			Iterable<T> itrb = (Iterable<T>) obj;
-			for (T o : itrb) {
-				printAnything(o);
-				System.out.println();
-			}
-		} else if (obj instanceof Object[]) {
-			Object[] itrb = (Object[]) obj;
-			for (Object o : itrb) {
-				printAnything(o);
-				System.out.println();
-			}
-		} else {
-			System.out.print(obj + " ");
-			return;
-		}
 	}
 
 	// Created by lsd
